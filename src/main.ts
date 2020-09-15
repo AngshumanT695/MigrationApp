@@ -103,42 +103,55 @@ do{
         }
         if(parsedDryRunOutput.missingDependency != null){
             console.log('You have the following missing dependencies.');
-            for(const dep of parsedDryRunOutput.missingDependency){
-                console.log(dep.message);
-                const installDep = nodePrompt('Install it now? (Y/n): ');
-                if(installDep === 'Y' || installDep === 'y'){
-                    const gitStatus: interfaces.gitStatusFormat = checkGitStatus(pathToAngularProj);
-                    if(gitStatus.clean){
+            const gitStatus: interfaces.gitStatusFormat = checkGitStatus(pathToAngularProj);
+            let cleanFlag: string;
+            if(!gitStatus.clean){
+                console.log(`Your working tree is not clean. Please look at the following files:\n${gitStatus.filesList}`);
+                cleanFlag = nodePrompt('Proceed (Y/n): ');
+            }
+            if(cleanFlag === 'Y' || cleanFlag === 'y'){
+                for(const dep of parsedDryRunOutput.missingDependency){
+                    console.log(dep.message);
+                    const installDep = nodePrompt('Install it now? (Y/n): ');
+                    if(installDep === 'Y' || installDep === 'y'){
                         installMissingDependency(dep.dependencyName, pathToAngularProj);
-                    }
-                    else{
-                        console.log(`Your working tree is not clean. Please look at the following files:\n${gitStatus.filesList}`);
-                        const proceed = nodePrompt('Continue? (Y/n): ');
-                        if(proceed === 'Y' || proceed === 'y'){
-                            installMissingDependency(dep.dependencyName, pathToAngularProj);
-                        }
                     }
                 }
             }
         }
     }
     if(flag !== 'E') flag = nodePrompt('Press "e" to exit app. Press any key to retry: ');
-    else console.log('Updates performed. Exiting..')
 }while(flag !== 'E' && flag !== 'e');
 
 function installMissingDependency(dependencyName: string, pathToNgProj: string): void
 {
-    const status = installDependency(dependencyName, pathToNgProj);
-    if(!status)
-        console.log(`Could not install ${dependencyName}`);
+    const installStatus: interfaces.updateLogFormat = installDependency(dependencyName, pathToNgProj);
+    if(installStatus.status == 0)
+        console.log(`Installed ${dependencyName}.`);
+    else if(installStatus.status == 1){
+        const errMsg = '' + installStatus.stdout == undefined ? '' : installStatus.stdout + installStatus.stderr == undefined ? '' : installStatus.stderr;
+        console.log(`Couldn't Update ${dependencyName}. Please find the error messages below:`);
+        console.log(errMsg);
+    }
 }
 
 function performNgUpdate(pathToAngularProj: string, version: string, forceUpdate: boolean): void
 {
+    let updateOutput: interfaces.updateLogFormat;
     if(forceUpdate)
-        performForceUpdate(pathToAngularProj, version);
+        updateOutput = performForceUpdate(pathToAngularProj, version);
     else 
-        performUpdate(pathToAngularProj, version);
+        updateOutput = performUpdate(pathToAngularProj, version);
+
+    if(updateOutput.status == 0){
+        console.log('Updated angular successfully. Update log saved as "Angular_Update_Log.txt."');
+        fs.writeFileSync('Angular_Update_Log.txt', updateOutput.stdout, 'utf-8');
+    }
+    else if(updateOutput.status == 1){
+        console.log(`Update couldn't be performed. Error saved to "Angular_Update_Error_Log.txt".`);
+        const errMsg = '' + updateOutput.stdout == undefined ? '' : updateOutput.stdout + updateOutput.stderr == undefined ? '' : updateOutput.stderr;
+        fs.writeFileSync('Angular_Update_Error_Log.txt', errMsg, 'utf-8');
+    }
 }
 
 function printErrorAndExit(errorMessage: string): void{

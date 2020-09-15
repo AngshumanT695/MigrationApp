@@ -74,3 +74,9 @@ export interface gitStatusFormat{
     clean: boolean,
     filesList: string
 }
+
+export interface updateLogFormat{
+    status: number,
+    stdout: string,
+    stderr: string
+}
