@@ -16,7 +16,7 @@ import apiRoutes from './server-src/api';
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {
   const server = express();
-  const distFolder = join(process.cwd(), 'dist/ng-migration/browser');
+  const distFolder = join(__dirname, '..', 'browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
@@ -48,7 +48,7 @@ export function app() {
   return server;
 }
 
-function run() {
+export function run() {
   const port = process.env.PORT || 4000;
 
   // Start up the Node server
