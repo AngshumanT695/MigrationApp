@@ -2,7 +2,7 @@
 const { app, BrowserWindow } = require('electron')
 const { run } = require('./dist/ng-migration/server/main');
 
-function createWindow() {
+function createWindow(port) {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -14,7 +14,7 @@ function createWindow() {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadURL('http://localhost:4000')
+  mainWindow.loadURL(`http://localhost:${port}`)
   mainWindow.maximize();
 
 
@@ -25,16 +25,16 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
 
-  run();
+  const port = await run();
 
-  createWindow()
+  createWindow(port);
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) createWindow(port)
   })
 })
 

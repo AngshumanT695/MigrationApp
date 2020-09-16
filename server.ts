@@ -48,13 +48,17 @@ export function app() {
   return server;
 }
 
-export function run() {
-  const port = process.env.PORT || 4000;
+export function run(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const port = process.env.PORT || 0;
 
-  // Start up the Node server
-  const server = app();
-  server.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    // Start up the Node server
+    const server = app();
+    const listener = server.listen(port, () => {
+      const resolvedPort: number = (<any>listener.address())?.port;
+      console.log(`Node Express server listening on http://localhost:${resolvedPort}`);
+      resolve(resolvedPort);
+    });
   });
 }
 
