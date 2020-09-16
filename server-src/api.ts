@@ -1,8 +1,10 @@
 import * as express from 'express';
 import { UpdateRequest } from './models/update-request';
 import checkNgProject from './utils/check-ng-project/check-ng-project';
+import performDryRun from './utils/dry-run/perform-dry-run';
 import getUpdateVersions from './utils/get-update-list/get-available-versions';
 import getUpdateList from './utils/get-update-list/get-update-list';
+import parseAppError from './utils/utilities/parse-app-error';
 
 const router = express.Router();
 
@@ -16,16 +18,17 @@ router.post('/get-upgrade-list', function (req, res) {
     const result = checkNgProject(projectPath) && getUpdateVersions(getUpdateList(projectPath));
     res.json(result);
   } catch (ex) {
-    res.status(500).json({ message: ex.message });
+    res.status(500).json(parseAppError(ex));
   }
 })
 
 router.post('/upgrade-dry', function (req, res) {
   try {
     const updateRequest = req.body as UpdateRequest;
-    // TODO: Perform dry upgrade
+    const result = checkNgProject(updateRequest?.path) && performDryRun(updateRequest)
+    res.json(result);
   } catch (ex) {
-    res.status(500).json({ message: ex.message });
+    res.status(500).json(parseAppError(ex));
   }
 })
 
@@ -34,7 +37,7 @@ router.post('/upgrade', function (req, res) {
     const updateRequest = req.body as UpdateRequest;
     // TODO: Perform actual upgrade
   } catch (ex) {
-    res.status(500).json({ message: ex.message });
+    res.status(500).json(parseAppError(ex));
   }
 })
 

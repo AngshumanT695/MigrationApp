@@ -5,3 +5,8 @@ export interface PackageInfo {
   upgradeCommand?: string,
   versions?: Array<string>
 }
+
+export interface PackageError {
+  name?: string,
+
+}
