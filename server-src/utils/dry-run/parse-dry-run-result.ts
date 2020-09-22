@@ -5,7 +5,7 @@ import { CommandResult } from '../../models/command-result';
 import { PackageInfo } from '../../models/package-info';
 
 export function parseError(dryRunOutput: CommandResult) {
-  const outputLines = breakOutputInLines(dryRunOutput.stdout);
+  const outputLines = breakOutputInLines(`${dryRunOutput.stdout}\n${dryRunOutput.stderr}`);
 
   const errorList: Array<{ dependency: string, problem: updateProblems, problemPackage: string, remarks: string }> = [];
 
@@ -49,15 +49,18 @@ function resolveRemarks(lastVar: string): string {
 
 function resolveProblemPackage(errorType: string, lastVar: string): string {
   let errorEnum: updateProblems;
-  if (errorType === 'missing')
+  if (errorType === 'missing') {
     errorEnum = updateProblems.missing;
-  else if (errorType === 'incompatible')
+  }
+  else if (errorType === 'incompatible') {
     errorEnum = updateProblems.incompatible;
-  else
-    throw `Error type unknown`;
+  }
+  else {
+    throw new Error('Unknown error occurred');
+  }
 
-  if (errorEnum == updateProblems.missing) {
-    const temp = lastVar.trim().split(/(?:^")|(?:"\s+@\s+")|(?:\^|~)|(?:"\.$)/)
+  if (errorEnum === updateProblems.missing) {
+    const temp = lastVar.trim().split(/(?:^")|(?:"\s+@\s+")|(?:\^|~)|(?:"\.$)/);
     return `${temp[1]}@${temp[3]}`;
   }
   else {

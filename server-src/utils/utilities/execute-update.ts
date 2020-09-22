@@ -11,4 +11,4 @@ function executeUpdate(updateRequest: UpdateRequest, dryRun = false, force = fal
   return output;
 }
 
-export default executeUpdate
+export default executeUpdate;

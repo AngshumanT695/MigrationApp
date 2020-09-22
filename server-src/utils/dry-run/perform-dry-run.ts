@@ -10,12 +10,20 @@ function performDryRun(updateRequest: UpdateRequest) {
 }
 
 function parseDryRun(dryRunOutput: CommandResult) {
-  if (dryRunOutput.status !== 0) {
-    const result = parseError(dryRunOutput);
-    console.log(result);
-    throw result;
+  const result: any = {};
+  result.status = dryRunOutput.status;
+  if (dryRunOutput.status === 1) {
+    result.updateList = null;
+    result.errorList = parseError(dryRunOutput);
   }
-  return parseResult(dryRunOutput);
+  else if (dryRunOutput.status === 0){
+    result.updateList = parseResult(dryRunOutput);
+    result.errorList = null;
+  }
+  else {
+    throw new Error('Unknown error occurred');
+  }
+  return result;
 }
 
 export default performDryRun;
