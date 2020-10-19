@@ -1,0 +1,37 @@
+{
+  "changes": [
+    {
+      "name": "HttpModule",
+      "description": "Replace `HttpModule` and `Http` Service with `HttpClientModule` and `HttpClient` Service",
+      "replace": [
+        {
+          "name": "Module-Name",
+          "file-types": ["*.module.ts"],
+          "from": "HttpModule",
+          "to": "HttpClientModule"
+        },
+        {
+          "name": "Module-Location",
+          "file-types": ["*.module.ts"],
+          "from": "@angular\/http",
+          "to": "@angular/common/http"
+        },
+        {
+          "name": "Service-Name",
+          "file-types": ["*.component.ts"],
+          "from": "Http",
+          "to": "HttpClient"
+        },
+        {
+          "name": "Service-Location",
+          "file-types": ["*.component.ts"],
+          "from": "@angular\/http",
+          "to": "@angular/common/http"
+        }
+      ],
+      "uninstall": [
+        "@angular/http"
+      ]
+    }
+  ]
+}

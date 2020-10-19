@@ -1,5 +1,3 @@
-import { CommandResult } from '../../models/command-result';
-
 import runShellCommand from './run-shell-command';
 
 function installNodePackage(packageName: string, projectPath: string)

@@ -1,9 +1,9 @@
 export interface ReplaceList {
   path: string;
-  changes: Array<ChangesFormat>;
+  replaceList: Array<ReplaceFormat>;
 }
 
-export interface ChangesFormat {
+export interface ReplaceFormat {
   name: string;
   'file-types': Array<string>;
   from: string;

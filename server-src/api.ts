@@ -7,6 +7,8 @@ import performDryRun from './utils/dry-run/perform-dry-run';
 import getUpdateVersions from './utils/get-update-list/get-available-versions';
 import getUpdateList from './utils/get-update-list/get-update-list';
 import installNodePackage from './utils/utilities/install-node-package';
+import unInstallNodePackage from './utils/utilities/un-install-node-package';
+import sendChangesList from './utils/replace-before-update/sendReplaceList';
 import replaceBeforeUpdate from './utils/replace-before-update/replace-before-update';
 import performUpdate from './utils/performUpdate/perform-update';
 import parseAppError from './utils/utilities/parse-app-error';
@@ -37,6 +39,16 @@ router.post('/upgrade-dry', (req, res) => {
   }
 });
 
+router.post('/changes-list', (req, res) => {
+  try {
+    const updateVersionFromTo = req.body as { from: string, to: string };
+    const result = sendChangesList(updateVersionFromTo);
+    res.json(result);
+  } catch (ex) {
+    res.status(500).json(parseAppError(ex));
+  }
+});
+
 router.post('/install-package', (req, res) => {
   try {
     const installRequest = req.body as InstallPackage;
@@ -47,10 +59,20 @@ router.post('/install-package', (req, res) => {
   }
 });
 
+router.post('/uninstall-package', (req, res) => {
+  try {
+    const unInstallRequest = req.body as InstallPackage;
+    const result = checkNgProject(unInstallRequest?.path) && unInstallNodePackage(unInstallRequest?.name, unInstallRequest.path);
+    res.json(result);
+  } catch (ex) {
+    res.status(500).json(parseAppError(ex));
+  }
+});
+
 router.post('/replace', (req, res) => {
   try {
     const replaceList = req.body as ReplaceList;
-    const changedFiles = checkNgProject(replaceList?.path) && replaceBeforeUpdate(replaceList?.path, replaceList?.changes);
+    const changedFiles = checkNgProject(replaceList?.path) && replaceBeforeUpdate(replaceList?.path, replaceList?.replaceList);
     res.json(changedFiles);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
@@ -68,7 +90,7 @@ router.post('/upgrade', (req, res) => {
 });
 
 router.all('*', (req, res) => {
-  res.status(404).json({ message: 'Invalid API.' });
+  res.status(404).json({message: 'Invalid API.'});
 });
 
 export default router;
