@@ -4,12 +4,15 @@ import { CommandResult } from '../../models/command-result';
 
 function runShellCommand(command: string, args: string[] = null, options: any = null) {
   let output: SpawnSyncReturns<Buffer | string>;
-  if (args === null && options === null)
-    output = spawn.sync(command);
-  else if (options === null)
+  if (args === null && options === null) {
+      output = spawn.sync(command);
+  }
+  else if (options === null) {
     output = spawn.sync(command, args);
-  else
+  }
+  else {
     output = spawn.sync(command, args, options);
+  }
 
   const formattedOutput: CommandResult = {
     pid: output.pid,
@@ -18,7 +21,7 @@ function runShellCommand(command: string, args: string[] = null, options: any = 
     stdout: output.stdout && output.stdout.toString(),
     stderr: output.stderr && output.stderr.toString(),
     error: output.error
-  }
+  };
 
   return formattedOutput;
 }
