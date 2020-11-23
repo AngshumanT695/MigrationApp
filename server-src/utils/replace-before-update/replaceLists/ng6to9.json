@@ -2,7 +2,7 @@
   "changes": [
     {
       "name": "HttpModule",
-      "description": "Replace `HttpModule` and `Http` Service with `HttpClientModule` and `HttpClient` Service",
+      "description": "Replace `HttpModule` and `Http` Service with `HttpClientModule` and `HttpClient` Service.",
       "replace": [
         {
           "name": "Module-Name",
@@ -31,6 +31,38 @@
       ],
       "uninstall": [
         "@angular/http"
+      ]
+    },
+    {
+      "name": "RxJS-5",
+      "description": "Remove deprecated RxJS 5 features.",
+      "commands": "npx rxjs-tslint rxjs-5-to-6-migrate -p src/tsconfig.app.json",
+      "uninstall": [
+        "rxjs-compat"
+      ]
+    },
+    {
+      "name": "ng-deep",
+      "description": "Replace `/deep/` with `::ng-deep` in your styles. Note they will be deprecated.",
+      "replace": [
+        {
+          "name": "/deep/",
+          "file-types": ["*.css", "*.html", "*.component.ts"],
+          "from": "/deep/",
+          "to": "::ng-deep"
+        }
+      ]
+    },
+    {
+      "name": "ng-Form",
+      "description": "Replace `ngForm` element selector to `ng-form`",
+      "replace": [
+        {
+          "name": "ngForm",
+          "file-types": ["*.css", "*.html", "*.component.ts"],
+          "from": "ngForm",
+          "to": "ng-form"
+        }
       ]
     }
   ]

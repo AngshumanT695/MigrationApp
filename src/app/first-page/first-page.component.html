@@ -19,9 +19,7 @@
       <div class="input-group mb-3">
         <input type="text" name="path" id="path" class="form-control form-control-lg" placeholder="Click to enter path">
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary">
-            <a routerLink="/secondPage">Open</a>
-          </button>
+          <button (click)="onBtnOpenClicked()" class="btn btn-outline-secondary">Open</button>
         </div>
       </div>
     </div>

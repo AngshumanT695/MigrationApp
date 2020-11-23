@@ -12,7 +12,7 @@ function replaceBeforeUpdate(projectPath: string, replaceList: Array<ReplaceForm
 
   for (const item of replaceList) {
     const changedFile = replace.sync({
-      files: item['file-types'].map(m => `${projectPath}src/**/${m}`),
+      files: item['file-types'].map(m => `${projectPath}src\/\*\*/${m}`),
       from: new RegExp(item.from, 'g'),
       to: item.to
     });

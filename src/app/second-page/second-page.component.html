@@ -21,9 +21,7 @@
       <div class="input-group mb-3">
         <input type="text" name="path" id="path" class="form-control" readonly>
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary">
-            <a routerLink="/firstPage">Reset path</a>
-          </button>
+          <button (click)="onBtnResetClicked()" class="btn btn-outline-secondary">Reset path</button>
         </div>
       </div>
     </div>
