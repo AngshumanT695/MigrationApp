@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 const { run } = require('./dist/ng-migration/server/main');
 
 function createWindow(port) {
@@ -47,3 +47,12 @@ app.on('window-all-closed', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.
+ipcMain.on('select-dirs', async (event, arg) => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  })
+  console.log('directories selected', result.filePaths)
+})

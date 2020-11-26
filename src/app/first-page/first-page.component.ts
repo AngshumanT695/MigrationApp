@@ -5,18 +5,35 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-first-page',
   templateUrl: './first-page.component.html',
-  styleUrls: ['./first-page.component.less']
+  styleUrls: ['./first-page.component.less'],
+  host: { 'class': 'app-page' }
 })
 export class FirstPageComponent implements OnInit {
 
-  constructor(private http: HttpClient, private router: Router) { }
+  errorMessage: string;
+  selectedDirectory: string
+
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }
 
-  onBtnOpenClicked(): void {
+  onFolderSelect(e: any) {
+    // const file = e.target.files?.item(0);
+    console.log(e);
+    this.selectedDirectory = 'something';
+    // if (file) {
+    //   this.errorMessage = null;
+    //   this.selectedDirectory = file.path;
+    // } else {
+    //   this.errorMessage = 'The selected directory is empty.'
+    // }
+  }
+
+  onProceed(): void {
     this.router.navigateByUrl('/secondPage');
-    this.http.get('http://localhost:4200/api//').subscribe(data => console.log(data));
   }
 
 }

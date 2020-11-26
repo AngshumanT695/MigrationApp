@@ -1,3 +1,12 @@
-<div class="app-container">
-  <router-outlet></router-outlet>
-</div>
+<mat-card class="main-container">
+  <mat-card-header class="border-bottom">
+    <mat-card-title class="position-relative text-primary" [class.main-header]="isFirstPage | async">
+      Ng-Migration <span class="main-header-sup text-accent">beta</span>
+    </mat-card-title>
+  </mat-card-header>
+  <div class="animation-container position-relative">
+    <div class="animation-container" [@routeAnimations]="prepareRoute(outlet)">
+      <router-outlet #outlet="outlet" class="main-router"></router-outlet>
+    </div>
+  </div>
+</mat-card>
