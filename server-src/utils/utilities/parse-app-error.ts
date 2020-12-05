@@ -6,7 +6,7 @@ function parseAppError(err: any) {
       return err;
     }
   } else {
-    return { message: 'An error has occurred. Please try again.' }
+    return { message: 'An error has occurred. Please try again.' };
   }
 }
 

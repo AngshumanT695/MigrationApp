@@ -8,9 +8,10 @@ import getUpdateVersions from './utils/get-update-list/get-available-versions';
 import getUpdateList from './utils/get-update-list/get-update-list';
 import installNodePackage from './utils/utilities/install-node-package';
 import unInstallNodePackage from './utils/utilities/un-install-node-package';
-import sendChangesList from './utils/replace-before-update/sendReplaceList';
+import sendChangesList from './utils/replace-before-update/send-replace-list';
 import replaceBeforeUpdate from './utils/replace-before-update/replace-before-update';
-import performUpdate from './utils/performUpdate/perform-update';
+import resolveHttp from './utils/replace-before-update/res-http-module/res-http-json';
+import performUpdate from './utils/perform-update/perform-update';
 import parseAppError from './utils/utilities/parse-app-error';
 
 const router = express.Router();
@@ -73,6 +74,15 @@ router.post('/replace', (req, res) => {
   try {
     const replaceList = req.body as ReplaceList;
     const changedFiles = checkNgProject(replaceList?.path) && replaceBeforeUpdate(replaceList?.path, replaceList?.replaceList);
+    res.json(changedFiles);
+  } catch (ex) {
+    res.status(500).json(parseAppError(ex));
+  }
+});
+
+router.post('/rem-http-json-map', (req, res) => {
+  try {
+    const changedFiles = checkNgProject(req.body.path) && resolveHttp(req.body.path);
     res.json(changedFiles);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
