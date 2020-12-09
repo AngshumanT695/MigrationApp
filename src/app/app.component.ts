@@ -44,7 +44,7 @@ export class AppComponent {
     const filePath: string = e.target.files[0]?.path || 'D:/Professional/aritri/package.json';
     this.onFileSelectError = null;
     if (filePath?.indexOf('package.json') >= 0) {
-      const lastSlashIndex = filePath.replace('\\', '/').lastIndexOf('/');
+      const lastSlashIndex = filePath.replace(/\\/g, '/').lastIndexOf('/');
       this.config.projectPath = filePath.substring(0, lastSlashIndex);
 
       this.availableVersionsLoading = APP_CONSTANTS.GET_VERSION_LIST_LOADING;
