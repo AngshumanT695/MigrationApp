@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
@@ -13,6 +13,10 @@ import { routerAnimations } from './app-animations';
 export class AppComponent {
 
   isFirstPage: Observable<boolean>;
+  version: string;
+  dryRunFlagDisabled: boolean;
+  forceRunFlagDisabled: boolean;
+  @ViewChild('fileInput') fileInput: ElementRef;
 
   constructor(
     private router: Router
@@ -26,6 +30,15 @@ export class AppComponent {
 
   prepareRoute(outlet: RouterOutlet) {
     return outlet?.activatedRouteData?.animationKey;
+  }
+
+  choosePath() {
+    this.fileInput.nativeElement.click();
+  }
+
+  onFileSelect(e) {
+    console.log(e);
+    //this.selectedDirectory = 'something';
   }
 
 }
