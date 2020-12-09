@@ -13,28 +13,24 @@ body {
   background-color: #f7f7f7;
 }
 
+[hidden] {
+  display: none;
+}
+
 .position-relative {
   position: relative;
 }
 
 .text-primary {
-  color: #3f51b5 !important;
+  color: #c2185b !important;
 }
 
 .text-accent {
-  color: #ff4081 !important;
+  color: #607d8b !important;
 }
 
 .text-danger {
   color: #f44336 !important;
-}
-
-.text-muted {
-  color: #f44336 !important;
-}
-
-.text-muted {
-  color: #6c757d !important;
 }
 
 .text-reset {
@@ -53,6 +49,12 @@ body {
   text-transform: capitalize !important;
 }
 
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .text-left {
   text-align: left !important;
 }
@@ -63,6 +65,11 @@ body {
 
 .text-right {
   text-align: right !important;
+}
+
+small,
+.small {
+  font-size: 0.8rem !important;
 }
 
 .font-weight-light {
@@ -110,11 +117,11 @@ body {
 }
 
 .w-100 {
-  width: 100%;
+  width: 100% !important;
 }
 
 .h-100 {
-  height: 100%;
+  height: 100% !important;
 }
 
 .main-router~.app-page {
@@ -131,17 +138,53 @@ body {
 }
 
 .bg-dark {
-  background-color: #343a40!important;
+  background-color: #343a40 !important;
 }
 
 .bg-secondary {
-  background-color: #6c757d!important;
+  background-color: #6c757d !important;
 }
 
 .text-secondary {
-  color: #6c757d!important;
+  color: #6c757d !important;
 }
 
 .text-dark {
-  color: #212529!important;
+  color: #212529 !important;
+}
+
+.spinner {
+  animation: rotate 2s linear infinite;
+  z-index: 2;
+  width: 50px;
+  height: 50px;
+
+  & .path {
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
 }

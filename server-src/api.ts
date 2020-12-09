@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 
 router.post('/get-upgrade-list', (req, res) => {
   try {
-    const projectPath: string = req.body.path;
+    const projectPath: string = req.body?.path?.replace('\\', '/');
     const result = checkNgProject(projectPath) && getUpdateVersions(getUpdateList(projectPath));
     res.json(result);
   } catch (ex) {

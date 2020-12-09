@@ -8,63 +8,90 @@
       <h2 class="px-3 pt-3">CONFIGURE</h2>
       <div class="px-3 flex-grow-1 overflow-auto">
 
-        <div>
+        <form #fileSelectForm="ngForm" [class.d-none]="config?.projectPath">
           <p>Select package.json of your Angular Project</p>
           <button mat-raised-button color="primary" class="w-100" (click)="choosePath()">Select package.json</button>
-          <input type="file" #fileInput class="d-none" accept=".json" (change)="onFileSelect($event)">
-          <div class="d-flex mt-3">
-            <mat-form-field class="w-50 mr-2">
-              <mat-label>Current Version</mat-label>
-              <input matInput [value]="version" readonly disabled>
-            </mat-form-field>
-            <mat-form-field class="w-50">
-              <mat-label>Update To</mat-label>
-              <mat-select name="updateTo">
-                <mat-option>Choose</mat-option>
-                <mat-option value="">...</mat-option>
-              </mat-select>
-            </mat-form-field>
+          <input type="file" #fileInput ngModel name="fileInput" class="d-none" accept=".json"
+            (change)="onFileSelect($event)">
+          <small class="d-block mt-2 text-danger">{{ fileSelectError }}</small>
+        </form>
+
+        <ng-container *ngIf="config?.projectPath && !fileSelectError">
+
+          <div class="mb-3">
+            <div class="text-secondary">Root Directory:</div>
+            <div class="text-truncate">{{ config.projectPath }}</div>
+          </div>
+
+          <ng-container *ngIf="!availableVersionsLoading">
+
+            <div class="d-flex">
+              <mat-form-field class="w-50 mr-2">
+                <mat-label>Current Version</mat-label>
+                <input matInput [value]="config.currentVersion" readonly disabled>
+              </mat-form-field>
+              <mat-form-field class="w-50">
+                <mat-label>Update To</mat-label>
+                <mat-select [(value)]="config.targetVersion">
+                  <mat-option *ngFor="let version of availableVersions" [value]="version">{{ version }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="mb-3">
+              <h3 class="mb-1">ARGUMENTS</h3>
+              <mat-checkbox class="pr-4">Dry Run</mat-checkbox>
+              <mat-checkbox> Force Run </mat-checkbox>
+            </div>
+
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Advanced Options
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div>
+                  <mat-selection-list>
+                    <h5 class="m-0">Migrations before updating</h5>
+                    <mat-list-option class="mb-2" checkboxPosition="before">
+                      Renderer will be converted to Renderer2
+                    </mat-list-option>
+                    <mat-list-option class="mb-2" checkboxPosition="before">
+                      Legacy HttpModule will be changed to HttpClientModule
+                    </mat-list-option>
+                  </mat-selection-list>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+
+          </ng-container>
+
+        </ng-container>
+
+        <div *ngIf="isLoading" class="mt-4 text-center">
+          <svg class="spinner text-primary" viewBox="0 0 50 50" stroke="currentColor">
+            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+          </svg>
+          <div class="mt-2 small text-secondary">
+            {{ isLoading }}
           </div>
         </div>
 
-        <div class="mb-3">
-          <h3 class="mb-1">ARGUMENTS</h3>
-          <mat-checkbox class="pr-4">Dry Run</mat-checkbox>
-          <mat-checkbox> Force Run </mat-checkbox>
-        </div>
-
-        <mat-accordion>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                Advanced Options
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div>
-              <mat-selection-list #replacementActionList>
-                <h5 class="m-0">Migrations before updating</h5>
-                <mat-list-option class="mb-2" checkboxPosition="before">
-                  Renderer will be converted to Renderer2
-                </mat-list-option>
-                <mat-list-option class="mb-2" checkboxPosition="before">
-                  Legacy HttpModule will be changed to HttpClientModule
-                </mat-list-option>
-              </mat-selection-list>
-            </div>
-          </mat-expansion-panel>
-        </mat-accordion>
       </div>
 
       <div class="px-3 py-2 toolbar-footer d-flex">
-        <button mat-raised-button class="w-50 mr-2">Reset</button>
-        <button mat-raised-button color="primary" class="w-50" type="submit">Run</button>
+        <button mat-raised-button class="w-50 mr-2" [disabled]="!config?.projectPath" (click)="reset()">Reset</button>
+        <button mat-raised-button color="primary" class="w-50" [disabled]="true">Run</button>
       </div>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div class="fresh-start text-secondary" (click)="choosePath()">
+    <div class="fresh-start text-secondary" (click)="(!config?.projectPath || fileSelectError) && choosePath()">
       <img class="fresh-start-icon" src="assets/renovate.svg">
-      <P>Select the package.json file of your angular application to begin.</P>
+      <p>
+        Select the package.json file of your angular application to begin.
+      </p>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
