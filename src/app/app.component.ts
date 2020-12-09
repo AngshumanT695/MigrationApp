@@ -1,4 +1,5 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { APP_CONSTANTS } from './app-constants';
@@ -13,6 +14,7 @@ import { UpgradeService } from './services/upgrade.service';
 export class AppComponent {
 
   availableVersions = [];
+  terminalMessage: string;
   fileSelectError: string;
   availableVersionsLoading: string;
   advanceOptionsLoading: string;
@@ -27,6 +29,7 @@ export class AppComponent {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLElement>;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: any,
     private upgradeService: UpgradeService
   ) { }
 
@@ -35,7 +38,7 @@ export class AppComponent {
   }
 
   onFileSelect(e: any) {
-    const filePath: string = e.target.files[0]?.path || 'D:/Professional/aritri/package.json';
+    const filePath: string = e.target.files[0]?.path || 'D:/Professional/aritri/src/package.json';
     if (filePath?.indexOf('package.json') >= 0) {
       this.fileSelectError = null;
       const lastSlashIndex = filePath.replace('\\', '/').lastIndexOf('/');
@@ -56,6 +59,10 @@ export class AppComponent {
           this.advanceOptionsLoading = null;
           this.advanceOptionsList = response?.changes;
         })
+      }, err => {
+        this.availableVersionsLoading = null;
+        this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
+        this.fileSelectError = err.error.message;
       });
     } else {
       this.fileSelectError = "You have not selected a valid package.json file."
@@ -70,6 +77,7 @@ export class AppComponent {
   reset() {
     this.config = new MigrationConfiguration();
     this.advanceOptionsSubscription?.unsubscribe();
+    this.terminalMessage = null;
     this.versionSubscription?.unsubscribe();
     this.resetLoaders();
   }
@@ -81,6 +89,34 @@ export class AppComponent {
 
   get isLoading() {
     return this.advanceOptionsLoading || this.availableVersionsLoading;
+  }
+
+  copied: boolean;
+  copyToClipboard(element: HTMLElement) {
+    if (isPlatformBrowser(this.platformId)) {
+      if (window.getSelection) {
+        const range = document.createRange();
+        range.selectNode(element);
+        window.getSelection().addRange(range);
+        document.execCommand("copy");
+        this.copied = true;
+      }
+      window.getSelection().removeAllRanges();
+      setTimeout(() => {
+        this.copied = false;
+      }, 1000);
+    }
+  }
+
+  clearTerminalOutput() {
+    this.terminalMessage = null;
+  }
+
+  private writeConsole(value: string) {
+    if (this.terminalMessage === undefined || this.terminalMessage === null) {
+      this.terminalMessage = '';
+    }
+    return this.terminalMessage += value;
   }
 
 }

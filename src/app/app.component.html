@@ -4,11 +4,12 @@
 
 <mat-sidenav-container class="main-container bg-dark">
   <mat-sidenav mode="side" opened class="side-drawer">
+
     <div class="d-flex flex-column h-100">
       <h2 class="px-3 pt-3">CONFIGURE</h2>
       <div class="px-3 flex-grow-1 overflow-auto">
 
-        <form #fileSelectForm="ngForm" [class.d-none]="config?.projectPath">
+        <form #fileSelectForm="ngForm" [class.d-none]="config?.projectPath && !fileSelectError">
           <p>Select package.json of your Angular Project</p>
           <button mat-raised-button color="primary" class="w-100" (click)="choosePath()">Select package.json</button>
           <input type="file" #fileInput ngModel name="fileInput" class="d-none" accept=".json"
@@ -82,13 +83,32 @@
         <button mat-raised-button color="primary" class="w-50" [disabled]="true">Run</button>
       </div>
     </div>
+
   </mat-sidenav>
+
   <mat-sidenav-content>
-    <div class="fresh-start text-secondary" (click)="(!config?.projectPath || fileSelectError) && choosePath()">
+
+    <div *ngIf="terminalMessage === undefined" class="fresh-start text-secondary"
+      (click)="(!config?.projectPath || fileSelectError) && choosePath()">
       <img class="fresh-start-icon" src="assets/renovate.svg">
       <p>
         Select the package.json file of your angular application to begin.
       </p>
     </div>
+
+    <div *ngIf="terminalMessage !== undefined" class="p-3">
+      <h2 class="d-flex align-items-center terminal-heading">
+        <span class="mr-5">TERMINAL OUTPUTS</span>
+        <button *ngIf="!copied" class="mr-3" mat-icon-button title="Copy" (click)="copyToClipboard(terminalOutputContent)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <span *ngIf="copied" class="mr-3">Copied!</span>
+        <button mat-icon-button color="warn" title="Clear Outpus" (click)="clearTerminalOutput()">
+          <mat-icon>delete_sweep</mat-icon>
+        </button>
+      </h2>
+      <div #terminalOutputContent [innerHTML]="terminalMessage"></div>
+    </div>
+
   </mat-sidenav-content>
 </mat-sidenav-container>
