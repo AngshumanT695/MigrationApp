@@ -1,64 +1,70 @@
-<mat-toolbar>
-  <span>Ng-Migration</span>
-</mat-toolbar>
+<header class="app-header mat-elevation-z3">
+  <h1>Ng-Migration</h1>
+</header>
+
 <mat-sidenav-container class="main-container bg-dark">
   <mat-sidenav mode="side" opened class="side-drawer">
     <div class="d-flex flex-column h-100">
-      <h2 class="px-3">CONFIGURE</h2>
+      <h2 class="px-3 pt-3">CONFIGURE</h2>
       <div class="px-3 flex-grow-1 overflow-auto">
-        <p>Please start by selecting an Angular Project.<span class="text-muted"> The root directory must contain <span
-              class="font-italic">angular.json</span></span></p>
-        <p>Selected Path </p>
-        <button mat-flat-button color="primary" class="w-100" (click)="choosePath()">Select file</button>
-        <input type="file" #fileInput class="d-none" accept=".json" (change)="onFileSelect($event)">
-        <div class="mt-3">
-          <mat-form-field class="mr-2">
-            <mat-label>Current Version</mat-label>
-            <input matInput [value]="version" readonly>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Update To</mat-label>
-            <mat-select name="updateTo">
-              <mat-option>Choose</mat-option>
-              <mat-option value="">...</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+
         <div>
-          <div>Flags</div>
-          <mat-checkbox [disabled]="dryRunFlagDisabled" class="pr-4"> Dry Run </mat-checkbox>
-          <mat-checkbox [disabled]="forceRunFlagDisabled"> Force Run </mat-checkbox>
+          <p>Select package.json of your Angular Project</p>
+          <button mat-raised-button color="primary" class="w-100" (click)="choosePath()">Select package.json</button>
+          <input type="file" #fileInput class="d-none" accept=".json" (change)="onFileSelect($event)">
+          <div class="d-flex mt-3">
+            <mat-form-field class="w-50 mr-2">
+              <mat-label>Current Version</mat-label>
+              <input matInput [value]="version" readonly disabled>
+            </mat-form-field>
+            <mat-form-field class="w-50">
+              <mat-label>Update To</mat-label>
+              <mat-select name="updateTo">
+                <mat-option>Choose</mat-option>
+                <mat-option value="">...</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
-        <p class="m-0">Before Updating</p>
-        <mat-selection-list #replacementActionList>
-          <mat-list-option checkboxPosition="before" >Http to HttpClient</mat-list-option>
-          <mat-list-option checkboxPosition="before">Http to HttpClient</mat-list-option>
-          <mat-list-option checkboxPosition="before">Http to HttpClient</mat-list-option>
-        </mat-selection-list>
-        <!--<mat-accordion>
+
+        <div class="mb-3">
+          <h3 class="mb-1">ARGUMENTS</h3>
+          <mat-checkbox class="pr-4">Dry Run</mat-checkbox>
+          <mat-checkbox> Force Run </mat-checkbox>
+        </div>
+
+        <mat-accordion>
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
-                Before Updating
+                Advanced Options
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-selection-list #replacementActionList>
-              <mat-list-option checkboxPosition="before">Http to HttpClient</mat-list-option>
-              <mat-list-option checkboxPosition="before">Http to HttpClient</mat-list-option>
-              <mat-list-option checkboxPosition="before">Http to HttpClient</mat-list-option>
-            </mat-selection-list>  
+            <div>
+              <mat-selection-list #replacementActionList>
+                <h5 class="m-0">Migrations before updating</h5>
+                <mat-list-option class="mb-2" checkboxPosition="before">
+                  Renderer will be converted to Renderer2
+                </mat-list-option>
+                <mat-list-option class="mb-2" checkboxPosition="before">
+                  Legacy HttpModule will be changed to HttpClientModule
+                </mat-list-option>
+              </mat-selection-list>
+            </div>
           </mat-expansion-panel>
-        </mat-accordion>-->
+        </mat-accordion>
       </div>
-      <div class="px-3 py-2">
-        <button mat-flat-button class="w-50" >Reset</button>
-        <button mat-flat-button color="primary" class="w-50" type="submit" >Run</button>
+
+      <div class="px-3 py-2 toolbar-footer d-flex">
+        <button mat-raised-button class="w-50 mr-2">Reset</button>
+        <button mat-raised-button color="primary" class="w-50" type="submit">Run</button>
       </div>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div class="text-secondary">
-      <mat-icon>upgrade</mat-icon>
+    <div class="fresh-start text-secondary" (click)="choosePath()">
+      <img class="fresh-start-icon" src="assets/renovate.svg">
+      <P>Select the package.json file of your angular application to begin.</P>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
