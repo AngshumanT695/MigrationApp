@@ -15,6 +15,7 @@ export class AppComponent {
   availableVersions = [];
   fileSelectError: string;
   availableVersionsLoading: string;
+  advanceOptionsLoading: string;
 
   config = new MigrationConfiguration();
 
@@ -54,22 +55,27 @@ export class AppComponent {
     this.fileSelectForm.reset();
   }
 
+  onSelectTargetVersion() {
+    this.advanceOptionsLoading = APP_CONSTANTS.GET_ADVANCE_OPTIONS_LOADING;
+
+    setTimeout(() => {
+      this.advanceOptionsLoading = null;
+    }, 2000);
+  }
+
   reset() {
     this.config = new MigrationConfiguration();
     this.versionSubscription?.unsubscribe();
-    this.isLoading = null;
+    this.resetLoaders();
   }
 
-  set isLoading(value: string) {
-    if (value) {
-      this.availableVersionsLoading = APP_CONSTANTS.GET_VERSION_LIST_LOADING;
-    } else {
-      this.availableVersionsLoading = null;
-    }
+  resetLoaders() {
+    this.availableVersionsLoading = null;
+    this.advanceOptionsLoading = null;
   }
 
   get isLoading() {
-    return this.availableVersionsLoading;
+    return this.advanceOptionsLoading || this.availableVersionsLoading;
   }
 
 }

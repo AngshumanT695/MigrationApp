@@ -32,7 +32,7 @@
               </mat-form-field>
               <mat-form-field class="w-50">
                 <mat-label>Update To</mat-label>
-                <mat-select [(value)]="config.targetVersion">
+                <mat-select [(value)]="config.targetVersion" (valueChange)="onSelectTargetVersion()">
                   <mat-option *ngFor="let version of availableVersions" [value]="version">{{ version }}</mat-option>
                 </mat-select>
               </mat-form-field>
