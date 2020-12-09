@@ -13,14 +13,17 @@ import { UpgradeService } from './services/upgrade.service';
 })
 export class AppComponent {
 
-  availableVersions = [];
+  availableVersions: Array<string>;
+  advanceOptionsList: Array<any>;
+
   terminalMessage: string;
-  fileSelectError: string;
+  onFileSelectError: string;
+  onVersionSelectError: string;
+
   availableVersionsLoading: string;
   advanceOptionsLoading: string;
 
   config = new MigrationConfiguration();
-  advanceOptionsList: Array<any>;
 
   versionSubscription: Subscription;
   advanceOptionsSubscription: Subscription;
@@ -38,9 +41,9 @@ export class AppComponent {
   }
 
   onFileSelect(e: any) {
-    const filePath: string = e.target.files[0]?.path || 'D:/Professional/aritri/src/package.json';
+    const filePath: string = e.target.files[0]?.path || 'D:/Professional/aritri/package.json';
+    this.onFileSelectError = null;
     if (filePath?.indexOf('package.json') >= 0) {
-      this.fileSelectError = null;
       const lastSlashIndex = filePath.replace('\\', '/').lastIndexOf('/');
       this.config.projectPath = filePath.substring(0, lastSlashIndex);
 
@@ -49,29 +52,34 @@ export class AppComponent {
       this.versionSubscription = this.upgradeService.getUpdateList(this.config.projectPath).subscribe(data => {
         this.availableVersionsLoading = null;
         const angularCore = data.filter(d => d.name === '@angular/core')[0];
-
         this.config.currentVersion = angularCore.current;
         this.availableVersions = angularCore.versions;
         this.config.targetVersion = this.availableVersions[0];
-
         this.onSelectTargetVersion();
-        this.advanceOptionsSubscription = this.upgradeService.getChangesList(this.config.currentVersion, this.config.targetVersion).subscribe((response: any) => {
-          this.advanceOptionsLoading = null;
-          this.advanceOptionsList = response?.changes;
-        })
       }, err => {
         this.availableVersionsLoading = null;
         this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
-        this.fileSelectError = err.error.message;
+        this.onFileSelectError = err.error.message;
       });
     } else {
-      this.fileSelectError = "You have not selected a valid package.json file."
+      this.onFileSelectError = "You have not selected a valid package.json file."
     }
     this.fileSelectForm.reset();
   }
 
   onSelectTargetVersion() {
+    this.onVersionSelectError = null;
     this.advanceOptionsLoading = APP_CONSTANTS.GET_ADVANCE_OPTIONS_LOADING;
+    this.advanceOptionsSubscription =
+      this.upgradeService.getChangesList(this.config.currentVersion, this.config.targetVersion)
+        .subscribe((response: any) => {
+          this.advanceOptionsLoading = null;
+          this.advanceOptionsList = response?.changes;
+        }, err => {
+          this.advanceOptionsLoading = null;
+          this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
+          this.onVersionSelectError = err.error.message;
+        });
   }
 
   reset() {
@@ -80,6 +88,11 @@ export class AppComponent {
     this.terminalMessage = null;
     this.versionSubscription?.unsubscribe();
     this.resetLoaders();
+  }
+
+  resetErrors() {
+    this.onFileSelectError = null;
+    this.onVersionSelectError = null;
   }
 
   resetLoaders() {

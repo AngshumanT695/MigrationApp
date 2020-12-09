@@ -9,19 +9,19 @@
       <h2 class="px-3 pt-3">CONFIGURE</h2>
       <div class="px-3 flex-grow-1 overflow-auto">
 
-        <form #fileSelectForm="ngForm" [class.d-none]="config?.projectPath && !fileSelectError">
+        <form #fileSelectForm="ngForm" [class.d-none]="config?.projectPath && !onFileSelectError">
           <p>Select package.json of your Angular Project</p>
           <button mat-raised-button color="primary" class="w-100" (click)="choosePath()">Select package.json</button>
           <input type="file" #fileInput ngModel name="fileInput" class="d-none" accept=".json"
             (change)="onFileSelect($event)">
-          <small class="d-block mt-2 text-danger">{{ fileSelectError }}</small>
+          <small class="d-block mt-2 text-danger">{{ onFileSelectError }}</small>
         </form>
 
-        <ng-container *ngIf="config?.projectPath && !fileSelectError">
+        <ng-container *ngIf="config?.projectPath && !onFileSelectError">
 
           <div class="mb-3">
-            <div class="text-secondary">Root Directory:</div>
-            <div class="text-truncate">{{ config.projectPath }}</div>
+            <h5 class="text-secondary m-0">Root Directory:</h5>
+            <p class="text-truncate" [attr.title]="config.projectPath">{{ config.projectPath }}</p>
           </div>
 
           <ng-container *ngIf="!availableVersionsLoading">
@@ -39,6 +39,10 @@
               </mat-form-field>
             </div>
 
+            <small *ngIf="onVersionSelectError" class="d-block mb-3 text-danger text-danger">
+              {{ onVersionSelectError }}
+            </small>
+
             <div class="mb-3">
               <h3 class="mb-1">ARGUMENTS</h3>
               <mat-checkbox class="pr-4">Dry Run</mat-checkbox>
@@ -55,7 +59,8 @@
                 <div>
                   <mat-selection-list>
                     <h5 class="m-0 pb-2">Migrations before updating</h5>
-                    <mat-list-option class="mb-2" checkboxPosition="before" selected="true" *ngFor="let option of advanceOptionsList">
+                    <mat-list-option class="mb-2" checkboxPosition="before" selected="true"
+                      *ngFor="let option of advanceOptionsList">
                       {{option.description}}
                     </mat-list-option>
                   </mat-selection-list>
@@ -89,7 +94,7 @@
   <mat-sidenav-content>
 
     <div *ngIf="terminalMessage === undefined" class="fresh-start text-secondary"
-      (click)="(!config?.projectPath || fileSelectError) && choosePath()">
+      (click)="(!config?.projectPath || onFileSelectError) && choosePath()">
       <img class="fresh-start-icon" src="assets/renovate.svg">
       <p>
         Select the package.json file of your angular application to begin.
@@ -99,7 +104,8 @@
     <div *ngIf="terminalMessage !== undefined" class="p-3">
       <h2 class="d-flex align-items-center terminal-heading">
         <span class="mr-5">TERMINAL OUTPUTS</span>
-        <button *ngIf="!copied" class="mr-3" mat-icon-button title="Copy" (click)="copyToClipboard(terminalOutputContent)">
+        <button *ngIf="!copied" class="mr-3" mat-icon-button title="Copy"
+          (click)="copyToClipboard(terminalOutputContent)">
           <mat-icon>content_copy</mat-icon>
         </button>
         <span *ngIf="copied" class="mr-3">Copied!</span>
