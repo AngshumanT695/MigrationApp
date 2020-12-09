@@ -44,7 +44,7 @@
               <mat-checkbox> Force Run </mat-checkbox>
             </div>
 
-            <mat-accordion>
+            <mat-accordion *ngIf="!advanceOptionsLoading">
               <mat-expansion-panel>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
@@ -53,12 +53,9 @@
                 </mat-expansion-panel-header>
                 <div>
                   <mat-selection-list>
-                    <h5 class="m-0">Migrations before updating</h5>
-                    <mat-list-option class="mb-2" checkboxPosition="before">
-                      Renderer will be converted to Renderer2
-                    </mat-list-option>
-                    <mat-list-option class="mb-2" checkboxPosition="before">
-                      Legacy HttpModule will be changed to HttpClientModule
+                    <h5 class="m-0 pb-2">Migrations before updating</h5>
+                    <mat-list-option class="mb-2" checkboxPosition="before" selected="true" *ngFor="let option of advanceOptionsList">
+                      {{option.description}}
                     </mat-list-option>
                   </mat-selection-list>
                 </div>

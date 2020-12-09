@@ -14,4 +14,8 @@ export class UpgradeService {
   getUpdateList(projectPath: string) {
     return this.http.post<Array<PackageInfo>>('/api/get-upgrade-list', { path: projectPath });
   }
+
+  getChangesList(from: string, to: string) {
+    return this.http.post('/api/changes-list', {from: from, to: to });
+  }
 }

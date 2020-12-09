@@ -18,8 +18,10 @@ export class AppComponent {
   advanceOptionsLoading: string;
 
   config = new MigrationConfiguration();
+  advanceOptionsList: Array<any>;
 
   versionSubscription: Subscription;
+  advanceOptionsSubscription: Subscription;
 
   @ViewChild('fileSelectForm') fileSelectForm: NgForm;
   @ViewChild('fileInput') fileInput: ElementRef<HTMLElement>;
@@ -48,6 +50,12 @@ export class AppComponent {
         this.config.currentVersion = angularCore.current;
         this.availableVersions = angularCore.versions;
         this.config.targetVersion = this.availableVersions[0];
+
+        this.onSelectTargetVersion();
+        this.advanceOptionsSubscription = this.upgradeService.getChangesList(this.config.currentVersion, this.config.targetVersion).subscribe((response: any) => {
+          this.advanceOptionsLoading = null;
+          this.advanceOptionsList = response?.changes;
+        })
       });
     } else {
       this.fileSelectError = "You have not selected a valid package.json file."
@@ -57,14 +65,11 @@ export class AppComponent {
 
   onSelectTargetVersion() {
     this.advanceOptionsLoading = APP_CONSTANTS.GET_ADVANCE_OPTIONS_LOADING;
-
-    setTimeout(() => {
-      this.advanceOptionsLoading = null;
-    }, 2000);
   }
 
   reset() {
     this.config = new MigrationConfiguration();
+    this.advanceOptionsSubscription?.unsubscribe();
     this.versionSubscription?.unsubscribe();
     this.resetLoaders();
   }
