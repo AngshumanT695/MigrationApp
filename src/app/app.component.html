@@ -49,7 +49,7 @@
               <mat-checkbox> Force Run </mat-checkbox>
             </div>
 
-            <mat-accordion *ngIf="!advanceOptionsLoading">
+            <mat-accordion *ngIf="!advanceOptionsLoading && !onVersionSelectError">
               <mat-expansion-panel>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
