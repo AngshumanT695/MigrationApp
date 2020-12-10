@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Component, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { MatSelectionListChange } from '@angular/material/list';
 import { Subscription } from 'rxjs';
 import { APP_CONSTANTS } from './app-constants';
 import { MigrationConfiguration } from './models/configuration';
@@ -75,12 +76,15 @@ export class AppComponent {
         .subscribe((response: any) => {
           this.advanceOptionsLoading = null;
           this.advanceOptionsList = response?.changes;
+          this.config.beforeChanges = this.advanceOptionsList;
         }, err => {
           this.advanceOptionsLoading = null;
           this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
           this.onVersionSelectError = err.error.message;
         });
   }
+
+  beforeUpgradeListCompareWith = (o1: any, o2: any) => o1.name === o2.name;
 
   reset() {
     this.config = new MigrationConfiguration();
