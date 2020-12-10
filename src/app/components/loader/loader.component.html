@@ -1,0 +1,9 @@
+<svg class="spinner text-primary" viewBox="0 0 50 50" stroke="currentColor">
+  <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+</svg>
+<div class="mt-2 px-5 small text-secondary">
+  {{ loadingMessage }}
+</div>
+<div *ngIf="willTakeTime" class="mt-2 px-5 small text-secondary">
+  This may take a few minutes.
+</div>

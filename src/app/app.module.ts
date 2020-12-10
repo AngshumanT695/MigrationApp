@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { LoaderModule } from './components/loader/loader.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
+    LoaderModule,
     MatCardModule,
     MatButtonModule,
     MatInputModule,
