@@ -1,7 +1,7 @@
 import { updateProblems } from './enumerations';
 
 export interface updateListObjFormat {
-  status: boolean,
+  status: boolean;
   updateList: Array<{
     name: string,
     current: string,
@@ -48,7 +48,7 @@ export interface dryRunParseFormat {
 
 export interface gitStatusFormat {
   clean: boolean,
-  filesList: string
+  filesList: Array<string>
 }
 
 export interface updateLogFormat {

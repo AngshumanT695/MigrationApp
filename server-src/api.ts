@@ -9,6 +9,7 @@ import getUpdateList from './utils/get-update-list/get-update-list';
 import installNodePackage from './utils/utilities/install-node-package';
 import unInstallNodePackage from './utils/utilities/un-install-node-package';
 import sendChangesList from './utils/perform-changes/send-changes-list';
+import checkGitStatus from './utils/utilities/checkGitStatus';
 import performChanges from './utils/perform-changes/perform-changes';
 import performUpdate from './utils/perform-update/perform-update';
 import parseAppError from './utils/utilities/parse-app-error';
@@ -63,6 +64,15 @@ router.post('/uninstall-package', (req, res) => {
   try {
     const unInstallRequest = req.body as InstallPackage;
     const result = checkNgProject(unInstallRequest?.path) && unInstallNodePackage(unInstallRequest?.name, unInstallRequest.path);
+    res.json(result);
+  } catch (ex) {
+    res.status(500).json(parseAppError(ex));
+  }
+});
+
+router.post('/check-git-status', (req, res) => {
+  try {
+    const result = checkGitStatus(req.body.path);
     res.json(result);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
