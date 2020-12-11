@@ -144,19 +144,6 @@ small,
   height: 100% !important;
 }
 
-.main-router~.app-page {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-
-  .mat-card-actions {
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: -8px;
-    padding-bottom: 0;
-  }
-}
-
 .bg-dark {
   background-color: #1f2225 !important;
 }
@@ -206,5 +193,17 @@ small,
   100% {
     stroke-dasharray: 90, 150;
     stroke-dashoffset: -124;
+  }
+}
+
+.mat-list-base .mat-list-item,
+.mat-list-base .mat-list-option {
+  height: auto !important;
+  min-height: 48px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+
+  .mat-list-item-content {
+    min-height: 48px;
   }
 }

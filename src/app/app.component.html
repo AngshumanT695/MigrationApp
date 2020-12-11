@@ -64,7 +64,7 @@
                   <mat-selection-list *ngIf="advanceOptionsList?.length > 0" [(ngModel)]="this.config.beforeChanges"
                     [compareWith]="beforeUpgradeListCompareWith">
                     <h5 class="m-0 pb-2">Migrations before updating</h5>
-                    <mat-list-option class="mb-2" checkboxPosition="before" *ngFor="let option of advanceOptionsList"
+                    <mat-list-option checkboxPosition="before" *ngFor="let option of advanceOptionsList"
                       [value]="option">
                       {{option.description}}
                     </mat-list-option>
