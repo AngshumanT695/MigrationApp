@@ -1,11 +1,5 @@
-export interface ReplaceList {
-  path: string;
-  replaceList: Array<ReplaceFormat>;
-}
-
 export interface ReplaceFormat {
-  name: string;
-  'file-types': Array<string>;
-  from: string;
-  to: string;
+  fileTypes: Array<string>;
+  from: string | Array<string>;
+  to: string | Array<string>;
 }

@@ -1,16 +1,14 @@
 import * as express from 'express';
 import { UpdateRequest } from './models/update-request';
 import { InstallPackage } from './models/install-package';
-import { ReplaceList } from './models/replace-list';
 import checkNgProject from './utils/check-ng-project/check-ng-project';
 import performDryRun from './utils/dry-run/perform-dry-run';
 import getUpdateVersions from './utils/get-update-list/get-available-versions';
 import getUpdateList from './utils/get-update-list/get-update-list';
 import installNodePackage from './utils/utilities/install-node-package';
 import unInstallNodePackage from './utils/utilities/un-install-node-package';
-import sendChangesList from './utils/replace-before-update/send-replace-list';
-import replaceBeforeUpdate from './utils/replace-before-update/replace-before-update';
-import resolveHttp from './utils/replace-before-update/res-http-module/res-http-json';
+import sendChangesList from './utils/perform-changes/send-changes-list';
+import performChanges from './utils/perform-changes/perform-changes';
 import performUpdate from './utils/perform-update/perform-update';
 import parseAppError from './utils/utilities/parse-app-error';
 
@@ -70,20 +68,10 @@ router.post('/uninstall-package', (req, res) => {
   }
 });
 
-router.post('/replace', (req, res) => {
+router.post('/perform-changes', (req, res) => {
   try {
-    const replaceList = req.body as ReplaceList;
-    const changedFiles = checkNgProject(replaceList?.path) && replaceBeforeUpdate(replaceList?.path, replaceList?.replaceList);
-    res.json(changedFiles);
-  } catch (ex) {
-    res.status(500).json(parseAppError(ex));
-  }
-});
-
-router.post('/rem-http-json-map', (req, res) => {
-  try {
-    const changedFiles = checkNgProject(req.body.path) && resolveHttp(req.body.path);
-    res.json(changedFiles);
+    const filesChanged = performChanges(req.body);
+    res.json(filesChanged);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
   }
