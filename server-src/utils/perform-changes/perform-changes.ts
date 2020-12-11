@@ -1,49 +1,69 @@
 import * as fs from 'fs';
+import { ChangesFormat, ChangesReturnFormat } from '../../models/change-list';
 import performReplace from './change-functions/perform-replace';
 import installNodePackage from '../utilities/install-node-package';
 import unInstallNodePackage from '../utilities/un-install-node-package';
 import runShellCommand from '../utilities/run-shell-command';
 import evaluateFunctionName from './change-functions/eval-func';
 
-function performChanges(changeObject: { path: string, from: string, to: string, changes: Array<string> }) {
+function performChanges(changeObject: ChangesFormat) {
   const changesList = getChangesList(changeObject);
 
-  const changeLog: Array<{ changeType: string, value: string }> = [];
+  const changeLog: Array<ChangesReturnFormat> = [];
 
   for (const change of changesList) {
-    const changeType = change.type;
-    switch (changeType) {
-      case 'replace':
-        performReplace(changeObject.path, change.metadata).forEach(m => changeLog.push({ changeType: 'replace', value: m }));
-        break;
-      case 'install':
-        installNodePackage(change.metadata, changeObject.path);
-        changeLog.push({ changeType: 'install', value: change.metadata });
-        break;
-      case 'uninstall':
-        unInstallNodePackage(change.metadata, changeObject.path);
-        changeLog.push({ changeType: 'uninstall', value: change.metadata });
-        break;
-      case 'command':
-        const output = runShellCommand(change.metadata, null, { cwd: changeObject.path });
-        if (output.pid === 0) { changeLog.push({ changeType: 'command', value: output.stdout }); }
-        else { throw new Error(output.stderr); }
-        break;
-      case 'function-call':
-        const returnVal = evaluateFunctionName(change.metadata, changeObject.path);
-        changeLog.push({ changeType: 'function-call', value: returnVal });
-        break;
-      default:
-        throw new Error('Unknown change type');
+    const obj = { id: change.id, operations: [] };
+    for (const operation of change.operations) {
+      switch (operation.type) {
+        case 'replace':
+          obj.operations.push({
+            changeType: 'replace',
+            value: performReplace(changeObject.path, operation.metadata)
+          });
+          break;
+        case 'install':
+          obj.operations.push({
+            changeType: 'install',
+            value: installNodePackage(operation.metadata, changeObject.path).installed
+          });
+          break;
+        case 'uninstall':
+          obj.operations.push({
+            changeType: 'uninstall',
+            value: unInstallNodePackage(operation.metadata, changeObject.path).uninstalled
+          });
+          break;
+        case 'command':
+          const output = runShellCommand(operation.metadata, null, { cwd: changeObject.path });
+          if (output.pid === 0) {
+            obj.operations.push({
+              changeType: 'command',
+              value: [ output.stdout ]
+            });
+          }
+          else {
+            throw new Error(output.stderr);
+          }
+          break;
+        case 'function-call':
+          obj.operations.push({
+            changeType: 'function-call',
+            value: evaluateFunctionName(operation.metadata, changeObject.path)
+          });
+          break;
+        default:
+          throw new Error('Unknown change type');
+      }
     }
+    changeLog.push(obj);
   }
 
   return changeLog;
 
 }
 
-function getChangesList(changeObject: { path: string, from: string, to: string, changes: Array<string> }) {
-  const fileName = `ng${changeObject.from}to${changeObject.to}.json`;
+function getChangesList(changeObject: ChangesFormat) {
+  const fileName = `ng${changeObject.from.split('.')[0]}to${changeObject.to.split('.')[0]}.json`;
 
   const changesJson = JSON.parse(fs.readFileSync(`./server-src/utils/perform-changes/changesLists/${fileName}`, 'utf-8'));
 
@@ -51,12 +71,12 @@ function getChangesList(changeObject: { path: string, from: string, to: string, 
 
   changesJson.beforeUpdate.forEach(m => {
     if (changeObject.changes.includes(m.id)) {
-      m.operations.forEach(n => changes.push(n));
+      changes.push({ id: m.id, operations: m.operations });
     }
   });
   changesJson.afterUpdate.forEach(m => {
     if (changeObject.changes.includes(m.id)) {
-      m.operations.forEach(n => changes.push(n));
+      changes.push({ id: m.id, operations: m.operations });
     }
   });
 

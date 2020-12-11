@@ -1,6 +1,7 @@
 import * as express from 'express';
 import { UpdateRequest } from './models/update-request';
 import { InstallPackage } from './models/install-package';
+import { ChangesFormat } from './models/change-list';
 import checkNgProject from './utils/check-ng-project/check-ng-project';
 import performDryRun from './utils/dry-run/perform-dry-run';
 import getUpdateVersions from './utils/get-update-list/get-available-versions';
@@ -70,7 +71,8 @@ router.post('/uninstall-package', (req, res) => {
 
 router.post('/perform-changes', (req, res) => {
   try {
-    const filesChanged = performChanges(req.body);
+    const changes = req.body as ChangesFormat;
+    const filesChanged = performChanges(changes);
     res.json(filesChanged);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));

@@ -38,7 +38,7 @@
         },
         {
           "type": "uninstall",
-          "metadata": "@angular/http"
+          "metadata": ["@angular/http"]
         },
         {
           "type": "function-call",
@@ -57,7 +57,7 @@
         },
         {
           "type": "uninstall",
-          "metadata": "rxjs-compat"
+          "metadata": ["rxjs-compat"]
         }
       ]
     }

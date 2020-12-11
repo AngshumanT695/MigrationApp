@@ -1,12 +1,11 @@
 import resolveHttp from './res-http-module/res-http-json';
 
-function evaluateFunctionName(functionName: string, path: string): string {
-  let returnVal: string;
+function evaluateFunctionName(functionName: string, path: string): Array<string> {
+  let returnVal: Array<string>;
 
   switch (functionName) {
     case 'resolveHttp':
-      const output = resolveHttp(path);
-      returnVal = `${output.length} files changed.`;
+      returnVal = resolveHttp(path);
       break;
     default:
       throw new Error('Unknown function called');

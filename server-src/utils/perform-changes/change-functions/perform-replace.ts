@@ -1,6 +1,6 @@
 import * as replace from 'replace-in-file';
 
-import { ReplaceFormat } from '../../../models/replace-list';
+import { ReplaceFormat } from '../../../models/change-list';
 
 function performReplace(projectPath: string, replaceList: Array<ReplaceFormat>): Array<string>
 {
