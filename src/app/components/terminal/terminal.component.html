@@ -1,0 +1,11 @@
+<h2 class="d-flex align-items-center terminal-heading">
+  <span class="mr-5">TERMINAL OUTPUTS</span>
+  <button *ngIf="!copied" class="mr-3" mat-icon-button title="Copy" (click)="copyToClipboard(terminalOutputContent)">
+    <mat-icon>content_copy</mat-icon>
+  </button>
+  <span *ngIf="copied" class="mr-3">Copied!</span>
+  <button mat-icon-button color="warn" title="Clear Outpus" (click)="clearTerminalOutput()">
+    <mat-icon>delete_sweep</mat-icon>
+  </button>
+</h2>
+<div #terminalOutputContent [innerHTML]="message"></div>

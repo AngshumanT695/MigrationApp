@@ -1,7 +1,5 @@
-import { isPlatformBrowser } from '@angular/common';
 import { Component, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatSelectionListChange } from '@angular/material/list';
 import { Subscription } from 'rxjs';
 import { APP_CONSTANTS } from './app-constants';
 import { MigrationConfiguration } from './models/configuration';
@@ -33,7 +31,6 @@ export class AppComponent {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLElement>;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: any,
     private upgradeService: UpgradeService
   ) { }
 
@@ -84,6 +81,14 @@ export class AppComponent {
         });
   }
 
+  onFlagChange(source: string) {
+    if (source === 'dryRun' && this.config.dryRun) {
+      this.config.force = false;
+    } else if (source === 'force' && this.config.force) {
+      this.config.dryRun = false;
+    }
+  }
+
   beforeUpgradeListCompareWith = (o1: any, o2: any) => o1.name === o2.name;
 
   reset() {
@@ -106,27 +111,6 @@ export class AppComponent {
 
   get isLoading() {
     return this.advanceOptionsLoading || this.availableVersionsLoading;
-  }
-
-  copied: boolean;
-  copyToClipboard(element: HTMLElement) {
-    if (isPlatformBrowser(this.platformId)) {
-      if (window.getSelection) {
-        const range = document.createRange();
-        range.selectNode(element);
-        window.getSelection().addRange(range);
-        document.execCommand("copy");
-        this.copied = true;
-      }
-      window.getSelection().removeAllRanges();
-      setTimeout(() => {
-        this.copied = false;
-      }, 1000);
-    }
-  }
-
-  clearTerminalOutput() {
-    this.terminalMessage = null;
   }
 
   private writeConsole(value: string) {

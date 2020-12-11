@@ -3,6 +3,8 @@ export class MigrationConfiguration {
     public projectPath?: string,
     public currentVersion?: string,
     public targetVersion?: string,
+    public dryRun?: boolean,
+    public force?: boolean,
     public beforeChanges?: Array<any>
   ) { }
 }

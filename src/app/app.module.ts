@@ -5,6 +5,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
+import { LoaderModule } from './components/loader/loader.module';
+import { TerminalModule } from './components/terminal/terminal.module';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +18,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { LoaderModule } from './components/loader/loader.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { LoaderModule } from './components/loader/loader.module';
     BrowserAnimationsModule,
     FormsModule,
     LoaderModule,
+    TerminalModule,
     MatCardModule,
     MatButtonModule,
     MatInputModule,

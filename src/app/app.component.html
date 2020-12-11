@@ -44,12 +44,16 @@
             </small>
 
             <div class="mb-3">
-              <h3 class="mb-1">ARGUMENTS</h3>
-              <mat-checkbox class="pr-4">Dry Run</mat-checkbox>
-              <mat-checkbox> Force Run </mat-checkbox>
+              <h3 class="mb-1">FLAGS</h3>
+              <mat-checkbox class="pr-4" [(ngModel)]="config.dryRun" (ngModelChange)="onFlagChange('dryRun')">
+                Dry Run
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="config.force" (ngModelChange)="onFlagChange('force')">
+                Force Run
+              </mat-checkbox>
             </div>
 
-            <mat-accordion *ngIf="!advanceOptionsLoading && !onVersionSelectError">
+            <mat-accordion *ngIf="!advanceOptionsLoading && !onVersionSelectError && advanceOptionsList?.length > 0">
               <mat-expansion-panel>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
@@ -95,20 +99,7 @@
       </p>
     </div>
 
-    <div *ngIf="terminalMessage !== undefined" class="p-3">
-      <h2 class="d-flex align-items-center terminal-heading">
-        <span class="mr-5">TERMINAL OUTPUTS</span>
-        <button *ngIf="!copied" class="mr-3" mat-icon-button title="Copy"
-          (click)="copyToClipboard(terminalOutputContent)">
-          <mat-icon>content_copy</mat-icon>
-        </button>
-        <span *ngIf="copied" class="mr-3">Copied!</span>
-        <button mat-icon-button color="warn" title="Clear Outpus" (click)="clearTerminalOutput()">
-          <mat-icon>delete_sweep</mat-icon>
-        </button>
-      </h2>
-      <div #terminalOutputContent [innerHTML]="terminalMessage"></div>
-    </div>
+    <app-terminal *ngIf="terminalMessage !== undefined" class="p-3" [message]="terminalMessage"></app-terminal>
 
   </mat-sidenav-content>
 </mat-sidenav-container>
