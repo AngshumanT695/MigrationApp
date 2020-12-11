@@ -94,19 +94,19 @@ export class AppComponent {
   reset() {
     this.config = new MigrationConfiguration();
     this.advanceOptionsSubscription?.unsubscribe();
-    this.terminalMessage = null;
     this.versionSubscription?.unsubscribe();
     this.resetLoaders();
+    this.resetErrors();
   }
 
   resetErrors() {
-    this.onFileSelectError = null;
-    this.onVersionSelectError = null;
+    this.onFileSelectError = undefined;
+    this.onVersionSelectError = undefined;
   }
 
   resetLoaders() {
-    this.availableVersionsLoading = null;
-    this.advanceOptionsLoading = null;
+    this.availableVersionsLoading = undefined;
+    this.advanceOptionsLoading = undefined;
   }
 
   get isLoading() {

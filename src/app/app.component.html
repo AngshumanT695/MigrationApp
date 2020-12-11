@@ -83,7 +83,8 @@
 
       <div class="px-3 py-2 toolbar-footer d-flex">
         <button mat-raised-button class="w-50 mr-2" [disabled]="!config?.projectPath" (click)="reset()">Reset</button>
-        <button mat-raised-button color="primary" class="w-50" [disabled]="true">Run</button>
+        <button mat-raised-button color="primary" class="w-50"
+          [disabled]="isLoading || onVersionSelectError !== null">Run</button>
       </div>
     </div>
 
