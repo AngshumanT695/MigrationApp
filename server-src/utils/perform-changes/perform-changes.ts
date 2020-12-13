@@ -42,7 +42,10 @@ function performChanges(changeObject: ChangesFormat) {
             });
           }
           else {
-            throw new Error(output.stderr);
+            obj.operations.push({
+              changeType: 'command',
+              value: [ output.stderr || output.error ]
+            });
           }
           break;
         case 'function-call':
