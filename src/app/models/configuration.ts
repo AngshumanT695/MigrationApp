@@ -5,7 +5,8 @@ export class MigrationConfiguration {
     public targetVersion?: string,
     public dryRun?: boolean,
     public force?: boolean,
-    public beforeChanges?: Array<any>
+    public beforeChanges?: Array<any>,
+    public afterChanges?: Array<any>
   ) { }
 }
 
@@ -15,4 +16,10 @@ export interface PackageInfo {
   upgradeTo?: string;
   upgradeCommand?: string;
   versions?: Array<string>;
+}
+
+export interface UpdateRequest {
+  path?: string;
+  packages?: Array<PackageInfo>;
+  force?: boolean;
 }

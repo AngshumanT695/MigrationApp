@@ -53,7 +53,7 @@
               </mat-checkbox>
             </div>
 
-            <mat-accordion *ngIf="!advanceOptionsLoading && !onVersionSelectError && advanceOptionsList?.length > 0">
+            <mat-accordion *ngIf="!advanceOptionsLoading && !onVersionSelectError && advanceOptions">
               <mat-expansion-panel>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
@@ -61,10 +61,18 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div>
-                  <mat-selection-list *ngIf="advanceOptionsList?.length > 0" [(ngModel)]="this.config.beforeChanges"
+                  <mat-selection-list *ngIf="advanceOptions.beforeUpdate?.length > 0" [(ngModel)]="this.config.beforeChanges"
                     [compareWith]="beforeUpgradeListCompareWith">
                     <h5 class="m-0 pb-2">Migrations before updating</h5>
-                    <mat-list-option checkboxPosition="before" *ngFor="let option of advanceOptionsList"
+                    <mat-list-option checkboxPosition="before" *ngFor="let option of advanceOptions.beforeUpdate"
+                      [value]="option">
+                      {{option.description}}
+                    </mat-list-option>
+                  </mat-selection-list>
+                  <mat-selection-list *ngIf="advanceOptions.afterUpdate?.length > 0" [(ngModel)]="this.config.afterChanges"
+                    [compareWith]="beforeUpgradeListCompareWith">
+                    <h5 class="m-0 pb-2">Migrations after updating</h5>
+                    <mat-list-option checkboxPosition="before" *ngFor="let option of advanceOptions.afterUpdate"
                       [value]="option">
                       {{option.description}}
                     </mat-list-option>
@@ -84,7 +92,7 @@
       <div class="px-3 py-2 toolbar-footer d-flex">
         <button mat-raised-button class="w-50 mr-2" [disabled]="!config?.projectPath" (click)="reset()">Reset</button>
         <button mat-raised-button color="primary" class="w-50"
-          [disabled]="isLoading || onVersionSelectError !== null">Run</button>
+          [disabled]="isLoading || onVersionSelectError !== null" (click)="run()">Run</button>
       </div>
     </div>
 

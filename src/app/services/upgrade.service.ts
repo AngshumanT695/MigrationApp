@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PackageInfo } from '../models/configuration';
+import { PackageInfo, UpdateRequest } from '../models/configuration';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,15 @@ export class UpgradeService {
   }
 
   getChangesList(from: string, to: string) {
-    return this.http.post('/api/changes-list', {from: from, to: to });
+    return this.http.post('/api/changes-list', { from: from, to: to });
+  }
+
+  upgrade(upgradeParams: UpdateRequest) {
+    return this.http.post<{ message: string }>('/api/upgrade', upgradeParams);
+  }
+
+  dryRun(upgradeParams: UpdateRequest) {
+    upgradeParams.force = true;
+    return this.http.post('/api/upgrade-dry', upgradeParams);
   }
 }

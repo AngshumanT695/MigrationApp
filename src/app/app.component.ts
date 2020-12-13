@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { APP_CONSTANTS } from './app-constants';
-import { MigrationConfiguration } from './models/configuration';
+import { MigrationConfiguration, UpdateRequest } from './models/configuration';
 import { UpgradeService } from './services/upgrade.service';
 
 @Component({
@@ -13,7 +13,8 @@ import { UpgradeService } from './services/upgrade.service';
 export class AppComponent {
 
   availableVersions: Array<string>;
-  advanceOptionsList: Array<any>;
+  advanceOptions: any;
+  upgradeList: Array<any>;
 
   terminalMessage: string;
   onFileSelectError: string;
@@ -39,7 +40,7 @@ export class AppComponent {
   }
 
   onFileSelect(e: any) {
-    const filePath: string = e.target.files[0]?.path || 'D:/Professional/aritri/package.json';
+    const filePath: string = e.target.files[0]?.path || 'C:/Users/Sohini/Desktop/Arnabi_Lockdown_POCS/Test-ng6-Sample/package.json';
     this.onFileSelectError = null;
     if (filePath?.indexOf('package.json') >= 0) {
       const lastSlashIndex = filePath.replace(/\\/g, '/').lastIndexOf('/');
@@ -49,6 +50,7 @@ export class AppComponent {
 
       this.versionSubscription = this.upgradeService.getUpdateList(this.config.projectPath).subscribe(data => {
         this.availableVersionsLoading = null;
+        this.upgradeList = data;
         const angularCore = data.filter(d => d.name === '@angular/core')[0];
         this.config.currentVersion = angularCore.current;
         this.availableVersions = angularCore.versions;
@@ -72,8 +74,9 @@ export class AppComponent {
       this.upgradeService.getChangesList(this.config.currentVersion, this.config.targetVersion)
         .subscribe((response: any) => {
           this.advanceOptionsLoading = null;
-          this.advanceOptionsList = response?.changes;
-          this.config.beforeChanges = this.advanceOptionsList;
+          this.advanceOptions = response;
+          this.config.beforeChanges = this.advanceOptions?.beforeUpdate;
+          this.config.afterChanges = this.advanceOptions?.afterUpdate;
         }, err => {
           this.advanceOptionsLoading = null;
           this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
@@ -99,6 +102,21 @@ export class AppComponent {
     this.resetErrors();
   }
 
+  run() {
+    if (this.config.dryRun) {
+      const updateRequest: UpdateRequest = { path: this.config.projectPath, packages: this.updatePackageVersions() };
+      this.upgradeService.dryRun(updateRequest).subscribe((response: any) => {
+        this.writeConsole(JSON.stringify(response));
+      });
+    } else {
+      const updateRequest: UpdateRequest = { path: this.config.projectPath, packages: this.updatePackageVersions(), force: this.config.force };
+      this.upgradeService.upgrade(updateRequest).subscribe((response: any) => {
+        this.writeConsole(JSON.stringify(response));
+      });
+    }
+
+  }
+
   resetErrors() {
     this.onFileSelectError = undefined;
     this.onVersionSelectError = undefined;
@@ -118,6 +136,41 @@ export class AppComponent {
       this.terminalMessage = '';
     }
     return this.terminalMessage += value;
+  }
+
+  private updatePackageVersions() {
+    let updateList = this.upgradeList.map(item => {
+      let i;
+      for (i = 0; i < item.versions.length; i++) {
+        if (!item.versions[i].includes('beta')) {
+          let itemMajor = item.versions[i].split('.')[0],
+            itemMinor = item.versions[i].split('.')[1],
+            targetMajor = this.config.targetVersion.split('.')[0],
+            targetMinor = this.config.targetVersion.split('.')[1],
+            updateToMajor = item.upgradeTo.split('.')[0];
+          if (item.versions[i] === this.config.targetVersion) {
+            item.upgradeTo = this.config.targetVersion;
+            break;
+          } else {
+            if (itemMajor === targetMajor) {
+              if (itemMinor === targetMinor) {
+                item.upgradeTo = item.versions[i];
+              } else {
+                if (updateToMajor === targetMajor && item.upgradeTo.split('.')[1] != targetMinor) {
+                  item.upgradeTo = item.versions[i];
+                }
+              }
+            } else if (targetMajor !== updateToMajor) {
+              if (itemMajor < targetMajor && targetMajor > updateToMajor) {
+                item.upgradeTo = item.versions[i];
+              }
+            }
+          }
+        }
+      }
+      return item;
+    });
+    return updateList;
   }
 
 }
