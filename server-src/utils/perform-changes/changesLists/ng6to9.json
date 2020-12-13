@@ -75,8 +75,8 @@
               "fileTypes": [
                 "*.component.ts"
               ],
-              "from": "@(View|Content)Child\\(\\s*([\\\"\\']\\w+[\\'\\\"])\\s*\\,\\s*\\{\\s*static\\s*\\:\\s*false\\s*\\}\\s*\\)",
-              "to": "@$1Child($2)"
+              "from": "@(View|Content)Child\\s*\\(\\s*([\\\"\\']\\w+[\\'\\\"])\\s*\\)",
+              "to": "@$1Child($2, { static: false })"
             }
           ]
         }
@@ -102,27 +102,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "5",
-      "name": "ng-Form",
-      "description": "Replace `ngForm` element selector to `ng-form`",
-      "operations": [
-        {
-          "type": "replace",
-          "metadata": [
-            {
-              "fileTypes": [
-                "*.css",
-                "*.html",
-                "*.component.ts"
-              ],
-              "from": "ngForm",
-              "to": "ng-form"
-            }
-          ]
-        }
-      ]
-    }
+    }  
   ]
 }
