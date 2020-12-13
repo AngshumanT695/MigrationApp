@@ -20,8 +20,8 @@
         <ng-container *ngIf="config?.projectPath && !onFileSelectError">
 
           <div class="mb-3">
-            <h5 class="text-secondary m-0">Root Directory:</h5>
-            <p class="text-truncate" [attr.title]="config.projectPath">{{ config.projectPath }}</p>
+            <h5 class="text-secondary m-0">Angular Project:</h5>
+            <p class="text-truncate">Test-ng6-Sample</p>
           </div>
 
           <ng-container *ngIf="!availableVersionsLoading">
@@ -61,16 +61,16 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div>
-                  <mat-selection-list #beforeUpdateOptions *ngIf="advanceOptions.beforeUpdate?.length > 0" [(ngModel)]="this.config.beforeChanges"
-                    [compareWith]="beforeUpgradeListCompareWith">
+                  <mat-selection-list #beforeUpdateOptions *ngIf="advanceOptions.beforeUpdate?.length > 0"
+                    [(ngModel)]="this.config.beforeChanges" [compareWith]="beforeUpgradeListCompareWith">
                     <h5 class="m-0 pb-2">Migrations before updating</h5>
                     <mat-list-option checkboxPosition="before" *ngFor="let option of advanceOptions.beforeUpdate"
                       [value]="option">
                       {{option.description}}
                     </mat-list-option>
                   </mat-selection-list>
-                  <mat-selection-list #afterUpdateOptions *ngIf="advanceOptions.afterUpdate?.length > 0" [(ngModel)]="this.config.afterChanges"
-                    [compareWith]="beforeUpgradeListCompareWith">
+                  <mat-selection-list #afterUpdateOptions *ngIf="advanceOptions.afterUpdate?.length > 0"
+                    [(ngModel)]="this.config.afterChanges" [compareWith]="beforeUpgradeListCompareWith">
                     <h5 class="m-0 pb-2">Migrations after updating</h5>
                     <mat-list-option checkboxPosition="before" *ngFor="let option of advanceOptions.afterUpdate"
                       [value]="option">
@@ -91,8 +91,8 @@
 
       <div class="px-3 py-2 toolbar-footer d-flex">
         <button mat-raised-button class="w-50 mr-2" [disabled]="!config?.projectPath" (click)="reset()">Reset</button>
-        <button mat-raised-button color="primary" class="w-50"
-          [disabled]="isLoading || onVersionSelectError !== null" (click)="run()">Run</button>
+        <button mat-raised-button color="primary" class="w-50" [disabled]="isLoading || onVersionSelectError !== null"
+          (click)="run()">Run</button>
       </div>
     </div>
 
