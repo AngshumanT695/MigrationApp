@@ -1,10 +1,11 @@
-import { Component, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { APP_CONSTANTS } from './app-constants';
 import { MigrationConfiguration, UpdateRequest, ChangesFormat } from './models/configuration';
 import { UpgradeService } from './services/upgrade.service';
 import { MatSelectionList, MatListOption } from '@angular/material/list';
+
 
 @Component({
   selector: 'app-root',
