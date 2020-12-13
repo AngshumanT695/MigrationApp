@@ -1,4 +1,4 @@
 export interface InstallPackage {
-  name?: string;
+  name?: Array<string>;
   path?: string;
 }

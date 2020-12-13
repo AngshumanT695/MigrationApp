@@ -1,8 +1,8 @@
 import * as replace from 'replace-in-file';
 
-import { ReplaceFormat } from '../../models/replace-list';
+import { ReplaceFormat } from '../../../models/change-list';
 
-function replaceBeforeUpdate(projectPath: string, replaceList: Array<ReplaceFormat>): Array<string>
+function performReplace(projectPath: string, replaceList: Array<ReplaceFormat>): Array<string>
 {
   if (projectPath.slice(-1) !== '/' && projectPath.slice(-1) !== '\\') {
     projectPath = projectPath + '/';
@@ -12,8 +12,8 @@ function replaceBeforeUpdate(projectPath: string, replaceList: Array<ReplaceForm
 
   for (const item of replaceList) {
     const changedFile = replace.sync({
-      files: item['file-types'].map(m => `${projectPath}src\/\*\*/${m}`),
-      from: new RegExp(item.from, 'g'),
+      files: item.fileTypes.map(m => `${projectPath}src\/\*\*/${m}`),
+      from: typeof item.from === 'string' ? new RegExp(item.from, 'g') : item.from.map(m => new RegExp(m, 'g')),
       to: item.to
     });
 
@@ -23,4 +23,4 @@ function replaceBeforeUpdate(projectPath: string, replaceList: Array<ReplaceForm
   return changedFiles;
 }
 
-export default replaceBeforeUpdate;
+export default performReplace;
