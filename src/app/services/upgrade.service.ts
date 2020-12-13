@@ -21,11 +21,11 @@ export class UpgradeService {
   }
 
   upgrade(upgradeParams: UpdateRequest) {
+    upgradeParams.force = true;
     return this.http.post<{ message: string }>('/api/upgrade', upgradeParams);
   }
 
   dryRun(upgradeParams: UpdateRequest) {
-    upgradeParams.force = true;
     return this.http.post('/api/upgrade-dry', upgradeParams);
   }
 

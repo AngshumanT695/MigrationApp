@@ -23,6 +23,7 @@ export class AppComponent {
 
   availableVersionsLoading: string;
   advanceOptionsLoading: string;
+  runLoading: string;
 
   config = new MigrationConfiguration();
 
@@ -43,7 +44,7 @@ export class AppComponent {
   }
 
   onFileSelect(e: any) {
-    const filePath: string = e.target.files[0]?.path || 'C:/Users/Sohini/Desktop/Arnabi_Lockdown_POCS/Test-ng6-Sample/package.json';
+    const filePath: string = e.target.files[0]?.path || 'D:/Demo/angular-6-boilerplate-master/package.json';
     this.onFileSelectError = null;
     if (filePath?.indexOf('package.json') >= 0) {
       const lastSlashIndex = filePath.replace(/\\/g, '/').lastIndexOf('/');
@@ -108,30 +109,64 @@ export class AppComponent {
   run() {
     if (this.config.dryRun) {
       const updateRequest: UpdateRequest = { path: this.config.projectPath, packages: this.updatePackageVersions() };
+      this.runLoading = APP_CONSTANTS.DRY_RUN_LOADING;
       this.upgradeService.dryRun(updateRequest).subscribe((response: any) => {
-        this.writeConsole(JSON.stringify(response));
+        this.runLoading = null;
+        if (response.status === 0) {
+          this.terminalMessage = this.writeConsole(
+            `<div class="text-success">
+              <h3>The Angular Project can be upgraded successfully!</h3>
+              ${response.stdout?.replace(/\n/g, '<br>') || response.stderr?.replace(/\n/g, '<br>')}
+            </div>`);
+        } else {
+          this.terminalMessage = this.writeConsole(
+            `<div class="text-warn">
+              <h3>Your project have incompatible packages. Please try a FORCE UPDATE!</h3>
+              ${response.stdout?.replace(/\n/g, '<br>') || response.stderr?.replace(/\n/g, '<br>')}
+            </div>`);
+        }
+      }, err => {
+        this.runLoading = null;
+        this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
       });
     } else {
+      this.runLoading = APP_CONSTANTS.RUN_LOADING;
       const beforeUpdateOptions: Array<string> = this.beforeUpdateOptions.selectedOptions.selected.map((item: MatListOption) => item.value.id);
       const beforeUpdateAdvanceOptionRequest: ChangesFormat = { path: this.config.projectPath, to: this.config.targetVersion, from: this.config.currentVersion, changes: beforeUpdateOptions };
-      this.upgradeService.performAdvanceOptionChanges(beforeUpdateAdvanceOptionRequest).subscribe(response => {
-        this.writeConsole(JSON.stringify(response));
-        const updateRequest: UpdateRequest = { path: this.config.projectPath, packages: this.updatePackageVersions(), force: this.config.force };
-        this.upgradeService.upgrade(updateRequest).subscribe((response: any) => {
-          this.writeConsole(JSON.stringify(response));
-          const afterUpdateOptions: Array<string> = this.afterUpdateOptions.selectedOptions.selected.map((item: any) => item.value.id);
-          const afterUpdateAdvanceOptionRequest: ChangesFormat = { path: this.config.projectPath, to: this.config.targetVersion, from: this.config.currentVersion, changes: afterUpdateOptions };
-          this.upgradeService.performAdvanceOptionChanges(afterUpdateAdvanceOptionRequest).subscribe(response => {
-            this.writeConsole(JSON.stringify(response));
-          }),
-            err => {
+      if (this.config.force) {
+        this.terminalMessage = this.writeConsole(`<p class="text-warn">WARNING: You are using the FORCE flag. Hope you know what you are doing.</p>`);
+      }
+      this.upgradeService.performAdvanceOptionChanges(beforeUpdateAdvanceOptionRequest)
+        .subscribe(response => {
+          this.terminalMessage = this.writeConsole(`<p class="text-success">STAGE 1: Before update operations completed.</p>`);
+          const updateRequest: UpdateRequest = { path: this.config.projectPath, packages: this.updatePackageVersions(), force: this.config.force };
+          this.upgradeService.upgrade(updateRequest)
+            .subscribe((response: any) => {
+              this.terminalMessage = this.writeConsole(`<p class="text-success">STAGE 2: ${response.message}</p>`);
+              const afterUpdateOptions: Array<string> = this.afterUpdateOptions.selectedOptions.selected.map((item: any) => item.value.id);
+              const afterUpdateAdvanceOptionRequest: ChangesFormat = { path: this.config.projectPath, to: this.config.targetVersion, from: this.config.currentVersion, changes: afterUpdateOptions };
+              this.upgradeService.performAdvanceOptionChanges(afterUpdateAdvanceOptionRequest)
+                .subscribe(response => {
+                  this.runLoading = null;
+                  this.terminalMessage = this.writeConsole(`
+                    <div class="text-success mb-3">
+                      STAGE 3: After update operations completed.
+                      <br>
+                      Your Angular project was updated successfully to ${this.config.targetVersion}!
+                    </div>`);
+                }, err => {
+                  this.runLoading = null;
+                  this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
+                })
+            }, err => {
+              this.runLoading = null;
               this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
-            };
+            })
+        }, err => {
+          this.runLoading = null;
+          this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
         })
-      })
-
     }
-
   }
 
   resetErrors() {
@@ -142,10 +177,11 @@ export class AppComponent {
   resetLoaders() {
     this.availableVersionsLoading = undefined;
     this.advanceOptionsLoading = undefined;
+    this.runLoading = undefined;
   }
 
   get isLoading() {
-    return this.advanceOptionsLoading || this.availableVersionsLoading;
+    return this.runLoading || this.advanceOptionsLoading || this.availableVersionsLoading;
   }
 
   private writeConsole(value: string) {

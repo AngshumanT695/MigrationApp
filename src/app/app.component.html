@@ -14,7 +14,7 @@
           <button mat-raised-button color="primary" class="w-100" (click)="choosePath()">Select package.json</button>
           <input type="file" #fileInput ngModel name="fileInput" class="d-none" accept=".json"
             (change)="onFileSelect($event)">
-          <small class="d-block mt-2 text-danger">{{ onFileSelectError }}</small>
+          <small *ngIf="onFileSelectError" class="d-block mt-2 text-danger">{{ onFileSelectError }}</small>
         </form>
 
         <ng-container *ngIf="config?.projectPath && !onFileSelectError">
@@ -54,7 +54,7 @@
             </div>
 
             <mat-accordion *ngIf="!advanceOptionsLoading && !onVersionSelectError && advanceOptions">
-              <mat-expansion-panel>
+              <mat-expansion-panel class="mb-4">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     Advanced Options
@@ -85,7 +85,7 @@
 
         </ng-container>
 
-        <app-loader *ngIf="isLoading" [loadingMessage]="isLoading"></app-loader>
+        <app-loader *ngIf="isLoading" class="mb-4" [loadingMessage]="isLoading"></app-loader>
 
       </div>
 

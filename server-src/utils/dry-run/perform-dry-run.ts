@@ -5,8 +5,9 @@ import executeUpdate from '../utilities/execute-update';
 
 function performDryRun(updateRequest: UpdateRequest) {
   const dryRunOutput = executeUpdate(updateRequest, true, false);
-  const parsedOutput = parseDryRun(dryRunOutput);
-  return parsedOutput;
+  // const parsedOutput = parseDryRun(dryRunOutput);
+  // return parsedOutput;
+  return dryRunOutput;
 }
 
 function parseDryRun(dryRunOutput: CommandResult) {
