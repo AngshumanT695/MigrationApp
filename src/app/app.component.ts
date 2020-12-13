@@ -43,7 +43,7 @@ export class AppComponent {
   }
 
   onFileSelect(e: any) {
-    const filePath: string = e.target.files[0]?.path || 'D:/Professional/aritri/package.json';
+    const filePath: string = e.target.files[0]?.path || 'C:/Users/Sohini/Desktop/Arnabi_Lockdown_POCS/Test-ng6-Sample/package.json';
     this.onFileSelectError = null;
     if (filePath?.indexOf('package.json') >= 0) {
       const lastSlashIndex = filePath.replace(/\\/g, '/').lastIndexOf('/');
@@ -123,8 +123,11 @@ export class AppComponent {
           const afterUpdateAdvanceOptionRequest: ChangesFormat = { path: this.config.projectPath, to: this.config.targetVersion, from: this.config.currentVersion, changes: afterUpdateOptions };
           this.upgradeService.performAdvanceOptionChanges(afterUpdateAdvanceOptionRequest).subscribe(response => {
             this.writeConsole(JSON.stringify(response));
-          })
-        });
+          }),
+            err => {
+              this.terminalMessage = this.writeConsole(`<p class="text-danger">${err.error.message}</p>`);
+            };
+        })
       })
 
     }
