@@ -20,50 +20,50 @@ router.get('/', (req, res) => {
   res.json({ data: 'App works fine.' });
 });
 
-router.post('/get-upgrade-list', (req, res) => {
+router.post('/get-upgrade-list', async (req, res) => {
   try {
     const projectPath: string = req.body?.path?.replace('\\', '/');
-    const result = checkNgProject(projectPath) && getUpdateVersions(getUpdateList(projectPath));
+    const result = await checkNgProject(projectPath) && getUpdateVersions(getUpdateList(projectPath));
     res.json(result);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
   }
 });
 
-router.post('/upgrade-dry', (req, res) => {
+router.post('/upgrade-dry', async (req, res) => {
   try {
     const updateRequest = req.body as UpdateRequest;
-    const result = checkNgProject(updateRequest?.path) && performDryRun(updateRequest);
+    const result = performDryRun(updateRequest);
     res.json(result);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
   }
 });
 
-router.post('/changes-list', (req, res) => {
+router.post('/changes-list', async (req, res) => {
   try {
     const updateVersionFromTo = req.body as { from: string, to: string };
-    const result = sendChangesList(updateVersionFromTo);
+    const result = await sendChangesList(updateVersionFromTo);
     res.json(result);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
   }
 });
 
-router.post('/install-package', (req, res) => {
+router.post('/install-package', async (req, res) => {
   try {
     const installRequest = req.body as InstallPackage;
-    const result = checkNgProject(installRequest?.path) && installNodePackage(installRequest?.name, installRequest?.path);
+    const result = installNodePackage(installRequest?.name, installRequest?.path);
     res.json(result);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
   }
 });
 
-router.post('/uninstall-package', (req, res) => {
+router.post('/uninstall-package', async (req, res) => {
   try {
     const unInstallRequest = req.body as InstallPackage;
-    const result = checkNgProject(unInstallRequest?.path) && unInstallNodePackage(unInstallRequest?.name, unInstallRequest.path);
+    const result = unInstallNodePackage(unInstallRequest?.name, unInstallRequest.path);
     res.json(result);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
@@ -89,10 +89,10 @@ router.post('/perform-changes', (req, res) => {
   }
 });
 
-router.post('/upgrade', (req, res) => {
+router.post('/upgrade', async (req, res) => {
   try {
     const updateRequest = req.body as UpdateRequest;
-    const result = checkNgProject(updateRequest?.path) && performUpdate(updateRequest);
+    const result = performUpdate(updateRequest);
     res.json(result);
   } catch (ex) {
     res.status(500).json(parseAppError(ex));
@@ -100,7 +100,7 @@ router.post('/upgrade', (req, res) => {
 });
 
 router.all('*', (req, res) => {
-  res.status(404).json({message: 'Invalid API.'});
+  res.status(404).json({ message: 'Invalid API.' });
 });
 
 export default router;

@@ -40,7 +40,7 @@ export class AppComponent {
   }
 
   onFileSelect(e: any) {
-    const filePath: string = e.target.files[0]?.path || 'C:/Users/Sohini/Desktop/Arnabi_Lockdown_POCS/Test-ng6-Sample/package.json';
+    const filePath: string = e.target.files[0]?.path || 'D:/Professional/aritri/package.json';
     this.onFileSelectError = null;
     if (filePath?.indexOf('package.json') >= 0) {
       const lastSlashIndex = filePath.replace(/\\/g, '/').lastIndexOf('/');
