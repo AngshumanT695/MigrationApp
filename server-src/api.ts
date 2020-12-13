@@ -16,7 +16,7 @@ import parseAppError from './utils/utilities/parse-app-error';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   res.json({ data: 'App works fine.' });
 });
 
@@ -70,7 +70,7 @@ router.post('/uninstall-package', async (req, res) => {
   }
 });
 
-router.post('/check-git-status', (req, res) => {
+router.post('/check-git-status', async (req, res) => {
   try {
     const result = checkGitStatus(req.body.path);
     res.json(result);
@@ -79,7 +79,7 @@ router.post('/check-git-status', (req, res) => {
   }
 });
 
-router.post('/perform-changes', (req, res) => {
+router.post('/perform-changes', async (req, res) => {
   try {
     const changes = req.body as ChangesFormat;
     const filesChanged = performChanges(changes);
@@ -99,7 +99,7 @@ router.post('/upgrade', async (req, res) => {
   }
 });
 
-router.all('*', (req, res) => {
+router.all('*', async (req, res) => {
   res.status(404).json({ message: 'Invalid API.' });
 });
 
