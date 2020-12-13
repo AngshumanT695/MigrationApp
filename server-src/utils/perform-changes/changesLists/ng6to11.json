@@ -1,0 +1,128 @@
+{
+  "beforeUpdate": [
+    {
+      "id": "1",
+      "name": "HttpModule",
+      "description": "Replace `HttpModule` and `Http` Service with `HttpClientModule` and `HttpClient` Service.",
+      "operations": [
+        {
+          "type": "replace",
+          "metadata": [
+            {
+              "fileTypes": [
+                "*.module.ts"
+              ],
+              "from": [
+                "HttpModule",
+                "@angular\/http"
+              ],
+              "to": [
+                "HttpClientModule",
+                "@angular/common/http"
+              ]
+            },
+            {
+              "fileTypes": [
+                "*.component.ts"
+              ],
+              "from": [
+                "Http",
+                "@angular\/http"
+              ],
+              "to": [
+                "HttpClient",
+                "@angular/common/http"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "uninstall",
+          "metadata": ["@angular/http"]
+        },
+        {
+          "type": "function-call",
+          "metadata": "resolveHttp"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "RxJS-5",
+      "description": "Remove deprecated RxJS 5 features.",
+      "operations": [
+        {
+          "type": "command",
+          "metadata": "npx rxjs-tslint rxjs-5-to-6-migrate -p src/tsconfig.app.json"
+        },
+        {
+          "type": "uninstall",
+          "metadata": ["rxjs-compat"]
+        }
+      ]
+    }
+  ],
+  "afterUpdate": [
+    {
+      "id": "3",
+      "name": "ViewChild or ContentChild",
+      "description": "Resolve `ViewChild` or `ContentChild`",
+      "operations": [
+        {
+          "type": "replace",
+          "metadata": [
+            {
+              "fileTypes": [
+                "*.component.ts"
+              ],
+              "from": "@(View|Content)Child\\(\\s*([\\\"\\']\\w+[\\'\\\"])\\s*\\,\\s*\\{\\s*static\\s*\\:\\s*false\\s*\\}\\s*\\)",
+              "to": "@$1Child($2)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "ng-deep",
+      "description": "Replace `/deep/` with `::ng-deep` in your styles. Note they will be deprecated.",
+      "operations": [
+        {
+          "type": "replace",
+          "metadata": [
+            {
+              "fileTypes": [
+                "*.css",
+                "*.html",
+                "*.component.ts"
+              ],
+              "from": "/deep/",
+              "to": "::ng-deep"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "ng-Form",
+      "description": "Replace `ngForm` element selector to `ng-form`",
+      "operations": [
+        {
+          "type": "replace",
+          "metadata": [
+            {
+              "fileTypes": [
+                "*.css",
+                "*.html",
+                "*.component.ts"
+              ],
+              "from": "ngForm",
+              "to": "ng-form"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
