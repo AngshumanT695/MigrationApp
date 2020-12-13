@@ -23,3 +23,10 @@ export interface UpdateRequest {
   packages?: Array<PackageInfo>;
   force?: boolean;
 }
+
+export interface ChangesFormat {
+  path: string;
+  from: string;
+  to: string;
+  changes: Array<string>;
+}

@@ -2,8 +2,9 @@ import { Component, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { APP_CONSTANTS } from './app-constants';
-import { MigrationConfiguration, UpdateRequest } from './models/configuration';
+import { MigrationConfiguration, UpdateRequest, ChangesFormat } from './models/configuration';
 import { UpgradeService } from './services/upgrade.service';
+import { MatSelectionList, MatListOption } from '@angular/material/list';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,8 @@ export class AppComponent {
 
   @ViewChild('fileSelectForm') fileSelectForm: NgForm;
   @ViewChild('fileInput') fileInput: ElementRef<HTMLElement>;
+  @ViewChild('beforeUpdateOptions') beforeUpdateOptions: MatSelectionList;
+  @ViewChild('afterUpdateOptions') afterUpdateOptions: MatSelectionList;
 
   constructor(
     private upgradeService: UpgradeService
@@ -109,10 +112,21 @@ export class AppComponent {
         this.writeConsole(JSON.stringify(response));
       });
     } else {
-      const updateRequest: UpdateRequest = { path: this.config.projectPath, packages: this.updatePackageVersions(), force: this.config.force };
-      this.upgradeService.upgrade(updateRequest).subscribe((response: any) => {
+      const beforeUpdateOptions: Array<string> = this.beforeUpdateOptions.selectedOptions.selected.map((item: MatListOption) => item.value.id);
+      const beforeUpdateAdvanceOptionRequest: ChangesFormat = { path: this.config.projectPath, to: this.config.targetVersion, from: this.config.currentVersion, changes: beforeUpdateOptions };
+      this.upgradeService.performAdvanceOptionChanges(beforeUpdateAdvanceOptionRequest).subscribe(response => {
         this.writeConsole(JSON.stringify(response));
-      });
+        const updateRequest: UpdateRequest = { path: this.config.projectPath, packages: this.updatePackageVersions(), force: this.config.force };
+        this.upgradeService.upgrade(updateRequest).subscribe((response: any) => {
+          this.writeConsole(JSON.stringify(response));
+          const afterUpdateOptions: Array<string> = this.afterUpdateOptions.selectedOptions.selected.map((item: any) => item.value.id);
+          const afterUpdateAdvanceOptionRequest: ChangesFormat = { path: this.config.projectPath, to: this.config.targetVersion, from: this.config.currentVersion, changes: afterUpdateOptions };
+          this.upgradeService.performAdvanceOptionChanges(afterUpdateAdvanceOptionRequest).subscribe(response => {
+            this.writeConsole(JSON.stringify(response));
+          })
+        });
+      })
+
     }
 
   }

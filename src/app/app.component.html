@@ -61,7 +61,7 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div>
-                  <mat-selection-list *ngIf="advanceOptions.beforeUpdate?.length > 0" [(ngModel)]="this.config.beforeChanges"
+                  <mat-selection-list #beforeUpdateOptions *ngIf="advanceOptions.beforeUpdate?.length > 0" [(ngModel)]="this.config.beforeChanges"
                     [compareWith]="beforeUpgradeListCompareWith">
                     <h5 class="m-0 pb-2">Migrations before updating</h5>
                     <mat-list-option checkboxPosition="before" *ngFor="let option of advanceOptions.beforeUpdate"
@@ -69,7 +69,7 @@
                       {{option.description}}
                     </mat-list-option>
                   </mat-selection-list>
-                  <mat-selection-list *ngIf="advanceOptions.afterUpdate?.length > 0" [(ngModel)]="this.config.afterChanges"
+                  <mat-selection-list #afterUpdateOptions *ngIf="advanceOptions.afterUpdate?.length > 0" [(ngModel)]="this.config.afterChanges"
                     [compareWith]="beforeUpgradeListCompareWith">
                     <h5 class="m-0 pb-2">Migrations after updating</h5>
                     <mat-list-option checkboxPosition="before" *ngFor="let option of advanceOptions.afterUpdate"

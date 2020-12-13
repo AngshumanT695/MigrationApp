@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PackageInfo, UpdateRequest } from '../models/configuration';
+import { ChangesFormat } from 'server-src/models/change-list';
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +27,9 @@ export class UpgradeService {
   dryRun(upgradeParams: UpdateRequest) {
     upgradeParams.force = true;
     return this.http.post('/api/upgrade-dry', upgradeParams);
+  }
+
+  performAdvanceOptionChanges(advanceOptions: ChangesFormat) {
+    return this.http.post('/api/perform-changes', advanceOptions);
   }
 }
