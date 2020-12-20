@@ -53,7 +53,7 @@ export class AppComponent {
 
       this.availableVersionsLoading = APP_CONSTANTS.GET_VERSION_LIST_LOADING;
 
-      this.versionSubscription = this.upgradeService.getUpdateList(this.config.projectPath).subscribe(data => {
+      this.versionSubscription = this.upgradeService.getUpdateList(this.config.projectPath, true).subscribe(data => {
         this.availableVersionsLoading = null;
         this.upgradeList = data;
         const angularCore = data.filter(d => d.name === '@angular/core')[0];
@@ -76,7 +76,7 @@ export class AppComponent {
     this.onVersionSelectError = null;
     this.advanceOptionsLoading = APP_CONSTANTS.GET_ADVANCE_OPTIONS_LOADING;
     this.advanceOptionsSubscription =
-      this.upgradeService.getChangesList(this.config.currentVersion, this.config.targetVersion)
+      this.upgradeService.getChangesList(this.config.currentVersion, this.config.targetVersion, true)
         .subscribe((response: any) => {
           this.advanceOptionsLoading = null;
           this.advanceOptions = response;

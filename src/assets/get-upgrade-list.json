@@ -1,0 +1,40 @@
+[
+    {
+        "name": "@angular/cli",
+        "current": "6.2.9",
+        "upgradeTo": "11.0.5",
+        "upgradeCommand": "ng update @angular/cli",
+        "versions": [
+            "11.0.5",
+            "11.1.0-next.3",
+            "8.3.29",
+            "7.3.10",
+            "9.1.13",
+            "10.2.1"
+        ]
+    },
+    {
+        "name": "@angular/core",
+        "current": "6.1.10",
+        "upgradeTo": "7.2.16",
+        "upgradeCommand": "ng update @angular/core",
+        "versions": [
+            "11.0.5",
+            "11.1.0-next.3",
+            "7.2.15",
+            "9.1.13",
+            "8.2.14",
+            "10.2.4"
+        ]
+    },
+    {
+        "name": "rxjs",
+        "current": "6.2.2",
+        "upgradeTo": "6.6.3",
+        "upgradeCommand": "ng update rxjs",
+        "versions": [
+            "6.6.3",
+            "7.0.0-beta.9"
+        ]
+    }
+]

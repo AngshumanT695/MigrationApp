@@ -12,11 +12,17 @@ export class UpgradeService {
     private http: HttpClient
   ) { }
 
-  getUpdateList(projectPath: string) {
+  getUpdateList(projectPath: string, mock: boolean) {
+    if (mock) {
+      return this.http.get<Array<PackageInfo>>('/assets/get-upgrade-list.json');
+    }
     return this.http.post<Array<PackageInfo>>('/api/get-upgrade-list', { path: projectPath });
   }
 
-  getChangesList(from: string, to: string) {
+  getChangesList(from: string, to: string, mock: boolean) {
+    if (mock) {
+      return this.http.get('/assets/changes-list.json');
+    }
     return this.http.post('/api/changes-list', { from: from, to: to });
   }
 
