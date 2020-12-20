@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { delay } from 'rxjs/operators';
 import { PackageInfo, UpdateRequest } from '../models/configuration';
 import { ChangesFormat } from 'server-src/models/change-list';
 
@@ -14,16 +15,18 @@ export class UpgradeService {
 
   getUpdateList(projectPath: string, mock: boolean) {
     if (mock) {
-      return this.http.get<Array<PackageInfo>>('/assets/get-upgrade-list.json');
+      return this.http.get<Array<PackageInfo>>('/assets/get-upgrade-list.json').pipe(delay(7500));
+    } else {
+      return this.http.post<Array<PackageInfo>>('/api/get-upgrade-list', { path: projectPath });
     }
-    return this.http.post<Array<PackageInfo>>('/api/get-upgrade-list', { path: projectPath });
   }
 
   getChangesList(from: string, to: string, mock: boolean) {
     if (mock) {
-      return this.http.get('/assets/changes-list.json');
+      return this.http.get('/assets/changes-list.json').pipe(delay(4000));;
+    } else {
+      return this.http.post('/api/changes-list', { from: from, to: to });
     }
-    return this.http.post('/api/changes-list', { from: from, to: to });
   }
 
   upgrade(upgradeParams: UpdateRequest) {
