@@ -45,7 +45,7 @@ export class AppComponent {
   }
 
   onFileSelect(e: any) {
-    const filePath: string = e.target.files[0]?.path || 'D:/Demo/angular-6-boilerplate-master/package.json';
+    const filePath: string = e.target.files[0]?.path || '/home/angshuman/Development/Web/Angular/Migration_OfficePOC/env_ng_6/Test-ng6-Sample/package.json';
     this.onFileSelectError = null;
     if (filePath?.indexOf('package.json') >= 0) {
       const lastSlashIndex = filePath.replace(/\\/g, '/').lastIndexOf('/');
@@ -122,7 +122,7 @@ export class AppComponent {
         } else {
           this.terminalMessage = this.writeConsole(
             `<div class="text-warn">
-              <h3>Your project have incompatible packages. Please try a FORCE UPDATE!</h3>
+              <h3>Your project has incompatible packages. Please try a FORCE UPDATE!</h3>
               ${response.stdout?.replace(/\n/g, '<br>') || response.stderr?.replace(/\n/g, '<br>')}
             </div>`);
         }
