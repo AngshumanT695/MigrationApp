@@ -23,7 +23,7 @@ export class UpgradeService {
 
   getChangesList(from: string, to: string, mock: boolean) {
     if (mock) {
-      return this.http.get('/assets/changes-list.json').pipe(delay(4000));;
+      return this.http.get('/assets/changes-list.json').pipe(delay(2000));;
     } else {
       return this.http.post('/api/changes-list', { from: from, to: to });
     }
@@ -34,8 +34,12 @@ export class UpgradeService {
     return this.http.post<{ message: string }>('/api/upgrade', upgradeParams);
   }
 
-  dryRun(upgradeParams: UpdateRequest) {
-    return this.http.post('/api/upgrade-dry', upgradeParams);
+  dryRun(upgradeParams: UpdateRequest, mock: boolean) {
+    if(mock) {
+      return this.http.get('/assets/upgrade-dry.json').pipe(delay(9000));
+    } else {
+      return this.http.post('/api/upgrade-dry', upgradeParams);
+    }
   }
 
   performAdvanceOptionChanges(advanceOptions: ChangesFormat) {

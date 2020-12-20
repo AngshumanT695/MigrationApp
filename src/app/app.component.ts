@@ -76,7 +76,7 @@ export class AppComponent {
     this.onVersionSelectError = null;
     this.advanceOptionsLoading = APP_CONSTANTS.GET_ADVANCE_OPTIONS_LOADING;
     this.advanceOptionsSubscription =
-      this.upgradeService.getChangesList(this.config.currentVersion, this.config.targetVersion, true)
+      this.upgradeService.getChangesList(this.config.currentVersion, this.config.targetVersion, false)
         .subscribe((response: any) => {
           this.advanceOptionsLoading = null;
           this.advanceOptions = response;
@@ -111,7 +111,7 @@ export class AppComponent {
     if (this.config.dryRun) {
       const updateRequest: UpdateRequest = { path: this.config.projectPath, packages: this.updatePackageVersions() };
       this.runLoading = APP_CONSTANTS.DRY_RUN_LOADING;
-      this.upgradeService.dryRun(updateRequest).subscribe((response: any) => {
+      this.upgradeService.dryRun(updateRequest, true).subscribe((response: any) => {
         this.runLoading = null;
         if (response.status === 0) {
           this.terminalMessage = this.writeConsole(
