@@ -181,6 +181,10 @@ export class AppComponent {
     this.runLoading = undefined;
   }
 
+  clearTerminal() {
+    this.terminalMessage = null;
+  }
+
   get isLoading() {
     return this.runLoading || this.advanceOptionsLoading || this.availableVersionsLoading;
   }

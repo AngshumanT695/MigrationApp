@@ -107,7 +107,7 @@
       </p>
     </div>
 
-    <app-terminal *ngIf="terminalMessage !== undefined" class="p-3" [message]="terminalMessage"></app-terminal>
+    <app-terminal *ngIf="terminalMessage !== undefined" class="p-3" [message]="terminalMessage" (clearTerminal)="clearTerminal()"></app-terminal>
 
   </mat-sidenav-content>
 </mat-sidenav-container>

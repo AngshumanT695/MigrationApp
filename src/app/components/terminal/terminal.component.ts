@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, Input, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, Input, PLATFORM_ID, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-terminal',
@@ -9,6 +9,7 @@ import { Component, Inject, Input, PLATFORM_ID } from '@angular/core';
 export class TerminalComponent {
 
   @Input() message: string;
+  @Output() clearTerminal = new EventEmitter<void>();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: any,
@@ -33,6 +34,7 @@ export class TerminalComponent {
 
   clearTerminalOutput() {
     this.message = null;
+    this.clearTerminal.emit();
   }
 
 }
